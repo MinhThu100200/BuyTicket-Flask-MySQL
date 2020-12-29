@@ -1,0 +1,91 @@
+*{
+    padding : 0;
+    margin : 0;
+    box-sizing: border-box;
+    outline : none;
+    font-family: 'Roboto', sans-serif;
+}
+body{
+
+    background-image: url("../images/bgd.jpg") ;
+   /* background :linear-gradient(90deg,#db91e0,white);*/
+    background-repeat : no-repeat ;
+    height : 100vh ;
+    background-size : cover;
+}
+
+.forms{
+    background:rgba(0,0,0,0.5);
+    margin-left: 400px;
+    margin-right : 400px;
+    margin -bottom :0;
+    border-radius : 10px;
+    padding : 1px;
+}
+.forms h1{
+    text-align :center;
+    font-size : 50px;
+    color : white ;
+}
+.form{
+    margin :30px;
+}
+.form-group{
+    color : #000000;
+}
+.topic-table{
+    padding : 10px 30px 10px;
+    background-color : #add8de;
+    margin :0 auto;
+    width : 89%;
+}
+
+.submit-form .sub{
+    margin : 10px 0 10px 250px ;
+    background-color: grey;
+    border: none;
+    color: white;
+    padding: 10px 50px;
+    text-decoration: none;
+    cursor: pointer;
+}
+/*CSS.TABLE*/
+.table-fixed{
+    margin-left:52px;
+    margin-top:0;
+    min-width : 599px;
+
+}
+.table-fixed thead,
+.table-fixed thead  th{
+    background: #ae2b2b;
+    color : white;
+}
+.table-fixed thead tr th{
+    border: 0 !important;
+}
+.table-fixed body tr td:last-child {
+    border-right : 0;
+
+}
+.table-fixed tbody td,
+.table-fixed thead tr th {
+    float : left;
+    font-size : 14px;
+    padding-left : 0px !important;
+    text-align : center;
+
+}
+.table-fixed .col{
+    width : 50%;
+}
+
+.table-fixed tbody {
+    display : block;
+    height :250px;
+    overflow-y :auto;
+    color : #e5fc43;
+}
+.table-fixed tr{
+    display : block;
+}

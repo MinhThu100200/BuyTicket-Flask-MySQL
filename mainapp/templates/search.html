@@ -1,0 +1,97 @@
+{% extends 'base/base.html' %}
+{% block header %}
+
+{% endblock %}
+{% block content %}
+<head>
+    <title>Search Flight</title>
+    <link href="../static/css/searchForm.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+     <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
+
+        <form class="form" method="post">
+            <h1>TRA CỨU CHUYẾN BAY</h1>
+                <div class="form-group">
+                    <label>Sân bay đi:</label>
+                    <select class="form-control" name="from">
+                        {% if airport %}
+                            {% for v in airport %}
+                             <option name="{{v}}">{{ v }}</option>
+                            {% endfor %}
+                        {% else %}
+                             <option>Chu Lai</option>
+                         <option>Tân Sơn Nhất</option>
+                         <option>Nội Bài</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                     <label>Sân bay đến:</label>
+                     <select class="form-control" name="to">
+                         {% if airport %}
+                            {% for v in airport %}
+                             <option name="{{ v }}">{{ v }}</option>
+                            {% endfor %}
+                        {% else %}
+                         <option>Chu Lai</option>
+                         <option>Tân Sơn Nhất</option>
+                         <option>Nội Bài</option>
+                          {% endif %}
+                   </select>
+                </div>
+            <div class="form-group">
+                  <label for="datef">Từ ngày:</label>
+                  <input type="date" class="form-control" name="dtefrom" id="datef">
+            </div>
+            <div class="form-group">
+                  <label for="datet">Đến ngày:</label>
+                  <input type="date" class="form-control" name="dteto" id="datet">
+            </div>
+            <div class="submit-form">
+                <input class="sub" type = "submit"  value ="TÌM">
+
+            </div>
+            {% if data %}
+            <div class ="topic-table" >
+                <b>Danh sách chuyến bay</b>
+            </div>
+
+            <div class ="form-group">
+                <div class="row">
+                <table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
+                    <thead>
+                    <tr>
+                        <th class="col">Sân bay đi</th>
+                        <th class="col">Sân bay đến</th>
+                        <th class="col">Khởi hành</th>
+                        <th class="col">Số ghế trống</th>
+                        <th class="col">Số ghế đặt</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for x in list_flight %}
+                        {% for k,v in data.items() %}
+                        <tr onclick="DetaiFlight({{data}}, {{x[0]}}, {{x[1]}})">
+                            <td class="col">{{ v }}</td>
+                        {% endfor %}
+                            <td class="col">{{ x[0] - x[1] }}</td>
+                            <td class="col">{{ x[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </form>
+     </div>
+</body>
+<script scr="../js/main.js"></script>
+</html>
+{% endblock %}

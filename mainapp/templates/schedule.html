@@ -1,0 +1,134 @@
+<head>
+    <title>Form Sell Ticket</title>
+     <link href="../static/css/DetailFlight.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+<!--  <img src="../static/images/bg1.jpg" alt="bg1"/>-->
+    <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
+        <form class="form">
+            <h1>NHẬN LỊCH CHUYẾN BAY</h1>
+            <br>
+            <br>
+            <div class="form-group " >
+                 <label for = "idf">Mã chuyến bay:</label>
+                 <input type="text" class="form-control col-md-8" name="IDFlight" id="idf">
+            </div>
+            <br>
+            <br>
+            <div class="form-group" >
+                  <label>Sân bay đi:</label>
+                  <select class="form-control col-md-8" >
+                      <option>Chu Lai</option>
+                       <option>Tân Sơn Nhất</option>
+                      <option>Nội Bài</option>
+                  </select>
+            </div>
+            <br>
+            <br>
+            <div class="form-group">
+                  <label>Sân bay đến:</label>
+                  <select class="form-control" >
+                      <option>Chu Lai</option>
+                      <option>Tân Sơn Nhất</option>
+                      <option>Nội Bài</option>
+                  </select>
+            </div>
+            <br>
+            <div class="form-group">
+                  <label for="dte-begin">Ngày đi:</label>
+                  <input type="date" class="form-control" id="dte-begin">
+            </div>
+            <br>
+            <div class="form-group">
+                      <label for="time-begin">Thời gian đi:</label>
+                      <input type="number" class="form-control" id="time-begin">
+            </div>
+             <br>
+            <div class="form-group">
+                  <label for="dte-end">Ngày đến :</label>
+                  <input type="date" class="form-control" id="dte-end">
+            </div>
+            <br>
+            <div class="form-group">
+                      <label for="time-end">Thời gian đi:</label>
+                      <input type="number" class="form-control" id="time-end">
+            </div>
+            <br>
+             <div class="form-group">
+                      <label for="amt1">Số ghế loại 1:</label>
+                      <input type="number" class="form-control" id="amt1">
+            </div>
+            <br>
+             <div class="form-group">
+                      <label for="amt2">Số ghế loại 2:</label>
+                      <input type="number" class="form-control" id="amt2">
+            </div>
+            <br>
+            <div class ="topic-table" >
+                <b>Các sân bay trung gian</b>
+            </div>
+            <br>
+            <div class ="form-group">
+                <table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
+                    <div class="row">
+                        <thead>
+                            <tr>
+                                <th class="col">Sân bay trung gian</th>
+                                <th class="col">Thời gian dừng</th>
+                                <th class="col">Ghi chú</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+                            <tr>
+                                <td class="col">Dubai</td>
+                                <td class="col">12:30:30</td>
+                                <td class="col">Không</td>
+                            </tr>
+
+                        </tbody>
+                    </div>
+                </table>
+            </div>
+            <div class="submit-form">
+                <center><input class="sub" type = "submit"  value ="Đặt vé"></center>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<head>
+    <title>Airport Manage</title>
+     <link href="../static/css/AirportManage.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="forms">
+        <form class="form">
+            <h1>QUẢN LÝ SÂN BAY</h1>
+            <div class ="topic-table" >
+                <b>Thông tin sân bay</b>
+            </div>
+            <div class="row">
+             <table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
+                    <thead>
+                    <tr>
+                        <th class="col">Mã sân bay</th>
+                        <th class="col">Tên sân bay</th>
+
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% if airport %}
+                        <tr>
+                            {% for x in airport %}
+                            <td class="col">{{x[0]}}</td>
+                            <td class="col">{{x[1]}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% else %}
+                         <tr>
+                            <td class="col">HN</td>
+                            <td class="col">Hà Nội</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">ĐN</td>
+                            <td class="col">Đà Nẵng</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">NT</td>
+                            <td class="col">Nha Trang</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">NT</td>
+                            <td class="col">Nha Trang</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">NT</td>
+                            <td class="col">Nha Trang</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">NT</td>
+                            <td class="col">Nha Trang</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">NT</td>
+                            <td class="col">Nha Trang</td>
+
+                        </tr>
+                        <tr>
+                            <td class="col">NT</td>
+                            <td class="col">Nha Trang</td>
+
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+                </div>
+            <br>
+        </form>
+    </div>
+</body>

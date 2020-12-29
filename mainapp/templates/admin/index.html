@@ -1,0 +1,10 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+    {% if current_user.is_authenticated %}
+        <h1>Welcome!!!</h1>
+        <a href="{{url_for('search')}}">search</a>
+    {% else %}
+        {% include 'admin/login.html' %}
+    {% endif %}
+{% endblock %}
