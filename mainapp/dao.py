@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
 from mainapp.models import *
@@ -155,64 +157,73 @@ def get_data_search(air_from, air_to, dte_from):
     query_id_air1 = 'SELECT id FROM airport WHERE name = %s'
     val1 = (air_from)
     id1 = get_id(query_id_air1, val1)
+
     query_id_air2 = 'SELECT id FROM airport WHERE name = %s'
     val2 = (air_to)
     id2 = get_id(query_id_air2, val2)
+
     query = 'CALL proc_search_flight(%s,%s,%s)'
     val = (id1, id2, dte_from)
+
     list_flight = read_data_para(query, val)
+
     return list_flight
 
 def get_data_search_date(dte_from):
     query = 'CALL proc_search_flight_date(%s)'
     val = (dte_from)
+
     list_flight = read_data_para(query, val)
+
     return list_flight
 
 def get_name(id):
     name_air = []
+
     query = 'SELECT fun_check_name_airport (%s)'
-    val = (id)
+    val = id
+
     list_name = read_data_para(query, val)
+
     for i in list_name:
         name_air.append(i[0])
+
     return name_air
 
-def search(id):
+def all_flight():
+
     list_flight = []
+
     l1 = Flight.query.join(FlightRoute). \
-        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.id_airport1, FlightRoute.id_airport2,
-                    Flight.plane_id). \
-        filter(Flight.flight_route_id == FlightRoute.id and Flight.id == id).all()
+        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, Flight.date_flight_to, FlightRoute.id_airport1,
+                    FlightRoute.id_airport2, Flight.plane_id). \
+                    filter(Flight.flight_route_id == FlightRoute.id).all()
+
     l2 = Flight.query.join(Plane). \
-        add_columns(Plane.amount_of_seat1, Plane.amount_of_seat2). \
-        filter(Flight.plane_id == Plane.id and Flight.id == id).all()
-    l = l1 + l2
-    print(l)
-    for i in l:
-        name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
-        name2 = Airport.query.add_columns(Airport.name).filter(i.id_airport2 == Airport.id).one()
-        dt = FlightDetail.flights
-        for n in dt:
-            detail = FlightDetail.query.add_columns(FlightDetail.inter_airport, FlightDetail.waiting_time, FlightDetail.note).\
-                filter(i.id == dt.id)
-        dic = {
-            'id': i.id,
-            'name1': name1,
-            'name2': name2,
-            'date-from': i.date_flight_from,
-            'time-begin': i.time_begin,
-            'date-end': i.date_flight_end,
-            'time-end': i.time_end,
-            'seat1': i.amount_of_seat1,
-            'seat2': i.amount_of_seat2,
-            'inter_air': detail.inter_air,
-            'wating-time': detail.wating_time,
-            'note': detail.note
-        }
-        list_flight.append(dic)
+        add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
+        filter(Flight.plane_id == Plane.id).all()
 
-    return(list_flight)
+    for i in l1:
+        if i.date_flight_from >= date.today():
+            for num in l2:
+                if num.id == i.id:
+                    name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
+                    name2 = Airport.query.add_columns(Airport.name).filter(i.id_airport2 == Airport.id).one()
+                    booked = Booking.query.filter(i.id == Booking.flight_id).count()
+            dic = {
+                'id': i.id,
+                'name1': name1,
+                'name2': name2,
+                'date_from': i.date_flight_from,
+                'time_begin': i.time_begin,
+                'date_end': i.date_flight_to,
+                'time_end': i.time_end,
+                'seat1': num.amount_of_seat1,
+                'seat2': num.amount_of_seat2,
+                'empty': num.quantity - booked,
+                'booked': booked,
+            }
 
+            list_flight.append(dic)
 
-
+    return (list_flight)

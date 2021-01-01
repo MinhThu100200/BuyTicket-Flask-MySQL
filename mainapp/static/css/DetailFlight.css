@@ -21,7 +21,6 @@
 }
 body{
 
-    background-image: url("../images/bgd.jpg") ;
    /* background :linear-gradient(90deg,#db91e0,white);*/
     background-repeat : no-repeat ;
     height : 100vh ;
@@ -49,7 +48,7 @@ body{
 }
 .topic-table{
     padding : 10px 30px 20px;
-    background-color : black;
+    background-color : grey;
     margin :0 auto;
     width : 100 %;
 }

@@ -4,10 +4,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 </head>
 <body>
-    <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
+    <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});" method="post">
         <form class="form">
             <h1>QUẢN LÝ CHUYẾN BAY</h1>
                 <div class ="topic-table" >
@@ -27,73 +28,26 @@
                                 <th class = "col">Số ghế đặt</th>
                             </tr>
                         </thead>
+                    {% if list_flight %}
                         <tbody>
-                        {% if list_flight %}
-                            <tr>
-                                {% for f in list_flight %}
-                                <td class = "col">{{f.name1[1]}}</td>
+                            {% for f in list_flight %}
+                                <tr>
+
+                                    <td class = "col"><a onclick="addToDetail({{f.id}})" href="{{ url_for('schedule') }}">{{f.name1[1]}}</a></td>
                                 <td class = "col">{{f.name2[1]}}</td>
                                 <td class = "col">{{f.date_from}}</td>
                                 <td class = "col">{{f.empty}}</td>
-                                <td class = "col">{{f.booked}}</td>
-                                {% endfor %}
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td class = "col">ĐN</td>
-                                <td class = "col">HN</td>
-                                <td class = "col">31/11/2020</td>
-                                <td class = "col"> 80</td>
-                                <td class = "col"> 40</td>
-                            </tr>
-                           <tr>
-                                <td class = "col">HCM</td>
-                                <td class = "col">ĐN</td>
-                                <td class = "col"> 30/11/2020</td>
-                                <td class = "col"> 120</td>
-                                <td class = "col">0</td>
-                            </tr>
-                        <tr>
-                                <td class = "col">HCM</td>
-                                <td class = "col">ĐN</td>
-                                <td class = "col"> 30/11/2020</td>
-                                <td class = "col"> 120</td>
-                                <td class = "col">0</td>
-                            </tr>
-                        <tr>
-                                <td class = "col">HCM</td>
-                                <td class = "col">ĐN</td>
-                                <td class = "col"> 30/11/2020</td>
-                                <td class = "col"> 120</td>
-                                <td class = "col">0</td>
-                            </tr>
-                        <tr>
-                                <td class = "col">HCM</td>
-                                <td class = "col">ĐN</td>
-                                <td class = "col"> 30/11/2020</td>
-                                <td class = "col"> 120</td>
-                                <td class = "col">0</td>
-                            </tr>
-                        <tr>
-                                <td class = "col">HCM</td>
-                                <td class = "col">ĐN</td>
-                                <td class = "col"> 30/11/2020</td>
-                                <td class = "col"> 120</td>
-                                <td class = "col">0</td>
-                            </tr>
-                        <tr>
-                                <td class = "col">HCM</td>
-                                <td class = "col">ĐN</td>
-                                <td class = "col"> 30/11/2020</td>
-                                <td class = "col"> 120</td>
-                                <td class = "col">0</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
+                                    <td class = "col">{{f.booked}}</td>
 
+
+                                </tr>
+                          {% endfor %}
+                        </tbody>
+                    {% endif %}
                 </table>
                       </div>
             </div>
+
             <div class="submit-form">
                 <input class="sub" type = "submit"  value ="CẬP NHẬT">
 
@@ -102,4 +56,5 @@
     </div>
 
 </body>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </html>

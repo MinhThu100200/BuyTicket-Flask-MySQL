@@ -1,5 +1,6 @@
+import json
 from datetime import date
-from flask import render_template, redirect,session, request, jsonify, url_for
+from flask import render_template, redirect, session, request, jsonify, url_for
 from mainapp import app, login, dao
 from flask_login import login_user
 import hashlib
@@ -36,7 +37,7 @@ def user_load(user_id):
     return User.query.get(user_id)
 
 @app.route("/employee/login", methods=["GET","POST"])
-def login():
+def login(): #login_user
 
     err_msg = ""
     
@@ -56,13 +57,13 @@ def login():
     return render_template("employee/login.html", err_msg=err_msg)
 
 @app.route('/logout')
-def logout():
+def logout(): #logout user
     session["user"] = None
     return redirect('/')
 
 @app.route('/search',methods=["GET","POST"])
 @login_required
-def search():
+def search(): #search chuyen bay
     query = 'SELECT * FROM airport'
 
     airport = dao.get_data_list_1(query)
@@ -92,47 +93,105 @@ def search():
 
     return render_template('search.html', airport=airport)
 
-@app.route('/schedule',methods=["GET","POST"])
-def schedule():
-    id_flight = Flight.query.all()
-    if request.method == 'POST':
-        id_f = request.form.get('')
-        list_flight = dao.search()
+@app.route('/api/detail',methods=["GET","POST"])
+def add_flight():
 
-
-
-    return render_template('schedule.html')
+    if 'detail' not in session:
+        session['detail'] = {}
+    detail = session['detail']
+    data = request.json
+    print(data)
+    id = str(data.get('id'))
+    name1 = data.get('name1')
+    name2 = data.get('name2')
+    date_from = data.get('date_from')
+    time_begin = data.get('time_begin')
+    date_end = data.get('date_end')
+    time_end = data.get('time_end')
+    amount_of_seat1 = data.get('amount_of_seat1')
+    amount_of_seat2 = data.get('amount_of_seat2')
+    detail = {
+        'id': id,
+        'name1': name1,
+        'name2': name2,
+        'date_from': date_from,
+        'time_begin': time_begin,
+        'date_end': date_end,
+        'time_end': time_end,
+        'amount_of_seat1': amount_of_seat1,
+        'amount_of_seat2': amount_of_seat2
+    }
+    session['detail'] = detail
+    print(detail)
+    return jsonify({'n': detail,
+                    'name': 1
+                    })
 
 @app.route('/manage-flight',methods=["GET","POST"])
-def manage():
-    list_flight = []
-    l1 = Flight.query.join(FlightRoute).\
-        add_columns(Flight.id, Flight.date_flight_from, FlightRoute.id_airport1, FlightRoute.id_airport2, Flight.plane_id).\
-        filter(Flight.flight_route_id == FlightRoute.id).all()
-    l2 = Flight.query.join(Plane).\
-        add_columns(Flight.id, Plane.quantity).\
-        filter(Flight.plane_id == Plane.id).all()
-    for i in l1:
-        for num in l2:
-            if num.id == i.id:
-                name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
-                name2 = Airport.query.add_columns(Airport.name).filter(i.id_airport2 == Airport.id).one()
-                booked = Booking.query.filter(i.id == Booking.flight_id).count()
-                dic = {
-                    'name1': name1,
-                    'name2': name2,
-                    'date_from': i.date_flight_from,
-                    'empty': num.quantity - booked,
-                    'booked': booked
-                }
-                list_flight.append(dic)
-                print(list_flight)
+def flight(): #tat ca chuyen bay ngay hom nay
+
+    list_flight = dao.all_flight()
     return render_template('manage-flight.html', list_flight=list_flight)
 
-@app.route('/api/manage',methods=["GET","POST"])
-def flight():
+@app.route('/schedule',methods=["GET","POST"])
+def schedule():
+    list_detail = []
+    f = {}
 
-    return jsonify()
+    flights = dao.all_flight()
+
+    detail = session['detail']
+    #print(flights)
+
+    for i in flights:
+        #print(i['id'])
+        if i['id'] == int(detail['id']):
+            dt = FlightDetail.query.add_columns(FlightDetail.inter_airport, FlightDetail.waiting_time, FlightDetail.note). \
+                                    filter(FlightDetail.flights.any(id=i['id'])).all()
+            f = i
+  
+
+    for d in dt:
+        dic = {
+            'inter_airport': d.inter_airport,
+            'waiting_time': d.waiting_time,
+            'note': d.note
+        }
+
+        list_detail.append(dic)
+    #print(f, list_detail)
+    return render_template('schedule.html', f=f, list_detail=list_detail)
+
+@app.route('/ticket')
+def ticket():
+    list_detail = []
+    f = {}
+
+    flights = dao.all_flight()
+
+    detail = session['detail']
+    # print(flights)
+
+    for i in flights:
+        # print(i['id'])
+        if i['id'] == int(detail['id']):
+            dt = FlightDetail.query.add_columns(FlightDetail.inter_airport, FlightDetail.waiting_time,
+                                                FlightDetail.note). \
+                filter(FlightDetail.flights.any(id=i['id'])).all()
+            f = i
+
+    for d in dt:
+        dic = {
+            'inter_airport': d.inter_airport,
+            'waiting_time': d.waiting_time,
+            'note': d.note
+        }
+
+        list_detail.append(dic)
+    if request.method == 'POST':
+        pass
+    # print(f, list_detail)
+    return render_template('ticket.html', f=f, list_detail=list_detail)
 
 @app.route('/manage-airport',methods=["GET"])
 def airport():
@@ -156,10 +215,10 @@ def route():
             'name2': name2[1]
         }
         list_route.append(dic)
-    print(list_route)
+    #print(list_route)
 
     return render_template('manage-flight-route.html', list_route=list_route)
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=8002)
+    app.run(debug=True, port=5008)
