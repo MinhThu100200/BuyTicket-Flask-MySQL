@@ -80,8 +80,8 @@
                         <tr onclick="DetaiFlight({{data}}, {{x[0]}}, {{x[1]}})">
                             <td class="col">{{ v }}</td>
                         {% endfor %}
-                            <td class="col">{{ x[0] - x[1] }}</td>
-                            <td class="col">{{ x[1] }}</td>
+                            <td class="col">{{ x.empty }}</td>
+                            <td class="col">{{ x.booked }}</td>
                         </tr>
                     {% endfor %}
                     {% endif %}

@@ -38,6 +38,24 @@ class SignupModelView(BaseView):
         # redirect to login page if user doesn't have access
         return redirect('/admin')
 
+class ChartView(BaseView):
+    @expose('/', methods=['get', 'post'])
+    def report(self):
+        if request.method == 'GET':
+            return self.render('/admin/chart.html')
+
+        if request.method == 'POST':
+            type = request.form.get('typechart')
+            return self.render('/admin/chart.html', chartJSON=draw_chart(type))
+        return redirect('/admin')
+
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect('/admin')
+
 '''class ReportMonthView(BaseView):
     @expose('/', methods=['get','post'])
     def report(self):

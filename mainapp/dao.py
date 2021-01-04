@@ -2,25 +2,96 @@ from datetime import date, timedelta
 
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
+from sqlalchemy import func
+
 from mainapp.models import *
 from flask import render_template, redirect, request, jsonify, session
 import hashlib
-'''def get_data_label():
-    labels = []
 
+'''
+def query(id):
+    if (id == "1"):
+        return "Select Year(datetime_bill) as 'Nam', Sum(money) as 'Doanh thu' From saledb.bill Group by Year(datetime_bill)"
+    elif (id == "2"):
+        return "SELECT DATE_FORMAT(datetime_bill, '%m-%Y') , SUM(money) AS DOANHTHU FROM saledb.bill GROUP BY DATE_FORMAT(datetime_bill, '%m-%Y') ORDER BY datetime_bill ASC"
+    elif (id == "3"):
+        return "SELECT * FROM Bill"
+    elif (id == "4"):
+        return "SELECT * FROM Bill"
+def get_data_label(query):
+    labels = []
+    data = []
     connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
 
-            sql = "SELECT * FROM revenuemonth"
-            cursor.execute(sql)
+
+            cursor.execute(query)
 
             x = cursor.fetchall()
-            for id in x:
-               labels.append(str(id[0]))
+            for item in x:
+                labels.append(str(item[0]))
+                data.append(str(item[1]))
     finally:
         connection.close()
-    return labels
+    return labels, data
+class MyBarGraphYears(BaseChart):
+    type = ChartType.Bar
+    class labels:
+        group = get_data_label(query("1")).__getitem__(0)
+    class data:
+        # label = labels
+        data = get_data_label(query("1")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Cyan
+        backgroundColor = Color.Green
+    class options:
+        title = {"text": "DOANH THU QUA CÁC NĂM ", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                 "ticks": {
+                     "beginAtZero": True,
+                 }
+                 }
+            ]
+        }
+
+class MyBarGraphMonthly(BaseChart):
+    type = ChartType.Bar
+
+    class labels:
+        group = get_data_label(query("2")).__getitem__(0)
+
+    class data:
+        # label = labels
+        data = get_data_label(query("2")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Cyan
+        backgroundColor = Color.Green
+
+    class options:
+        title = {"text": "DOANH THU QUA CÁC THÁNG", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
+            ]
+        }
+def draw_chart(type):
+    if (type == "1"):
+        NewChart = MyBarGraphYears()
+    if (type == "2"):
+        NewChart = MyBarGraphMonthly()
+    if (type == "3"):
+        NewChart = MyBarGraphMonthly()
+    if (type == "4"):
+        NewChart = MyBarGraphMonthly()
+    ChartJSON = NewChart.get()
+    return ChartJSON
 
 def get_data_value():
 
@@ -56,8 +127,8 @@ def draw_chart():
     if NewChart.data.data == []:
         NewChart.data.data = [45, 67, 50, 23, 45, 67, 90, 12, 56, 78, 90, 170]
     ChartJSON = NewChart.get()
-    return jsonify(ChartJSON)
-'''
+    return jsonify(ChartJSON)'''
+
 def read_data(query):
     connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
@@ -209,7 +280,7 @@ def all_flight():
                 if num.id == i.id:
                     name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
                     name2 = Airport.query.add_columns(Airport.name).filter(i.id_airport2 == Airport.id).one()
-                    booked = Booking.query.filter(i.id == Booking.flight_id).count()
+                    booked = db.session.query(func.sum(Booking.amount_seat)).filter(i.id == Booking.flight_id).scalar()
             dic = {
                 'id': i.id,
                 'name': i.name,
@@ -296,13 +367,7 @@ def add_total(cart, client):
                             flag = 1
                 if flag == 0:
                     card.append(c['id_card'])
-                    print(type(price_flight_id[1]))
-                    print(type(p['id']))
-                    print(type(c['id']))
-                    print(type(user[0]))
-
                     ticket = add_ticket(price_flight_id[1], 1, p['id'], c['id'], user[0])
-                    print(ticket)
 
         else:
             for c in list(client.values()):
@@ -313,7 +378,6 @@ def add_total(cart, client):
                 if flag == 0:
                     card.append(c['id_card'])
                     ticket = add_ticket(price_flight_id[1], 2, p['id'], c['id'], user[0])
-                    print(ticket)
         for c in list(client.values()):
             booking = add_booking(p['quantity'], c['id'], p['id'])
             print(booking)
