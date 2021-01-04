@@ -1,40 +1,63 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+{% extends 'base/base.html' %}
+
+{% block header %}
+
+{% endblock %}
+{% block content %}
 <h1 class="text-center text-danger"> Thanh toán giỏ hàng</h1>
 <div class="container">
     <div class="alert alert-warning">
         <h3>Số lượng vé: {{total_quantity}}</h3>
         <h3>Tổng tiền: {{total_amount}} VND</h3>
     </div>
+    {% if err_msg %}
+    <div class="alert alert-danger">
+        {{ err_msg }}
+    </div>
+    {% endif %}
     <table class="table">
         <tr>
             <th>ID</th>
             <th>Giá</th>
             <th>Số lượng</th>
         </tr>
-        {% if 'cart' in session and session['cart']  %}
+        {% if 'cart' in session and session['cart'] %}
         {% for p in session['cart'].values() %}
         <tr>
 
             <td>{{p.id}}</td>
 
-             <td>{{p.price}}</td>
-             <td>
-                 <div class="form-group">
-                     <input type="number"
-                            value="{{p.quantity}}"
-                            class="form-control"/>
-                 </div>
-             </td>
+            <td>{{p.price}}</td>
+            <td>
+                <div class="form-group">
+                    <input type="number"
+                           value="{{p.quantity}}"
+                           class="form-control"/>
+                </div>
+            </td>
 
         </tr>
         {% endfor %}
         {% else %}
-            <td colspan="3">Không có vé nào trong giỏ</td>
+        <td colspan="3">Không có vé nào trong giỏ</td>
         {% endif %}
     </table>
-    <input type="button" onclick="pay()" value="Thanh toán" class="btn btn-danger"/>
+    <!--    <input type="button" onclick="pay()" value="Thanh toán" class="btn btn-danger"/>-->
+    <form class="form-horizontal loginFrm" action="/payMoMo" style="text-align:center;" method="post">
+        <div class="control-group">
+            <input type="radio" id="after" name="type" value="after" checked="true" style="display: inline;">
+            <label for="after" style="display: inline-block;">Thanh toán tiền mặt </label><br>
+            <img style="max-width:60px ; height: 60px;"
+                 src="{{ url_for('static' , filename = 'img/payByMoney.png')}}" alt=""/>
+        </div>
+        <div class="control-group">
+            <input type="radio" id="momo" name="type" value="momo" style="display: inline;">
+            <label for="momo" style="display: inline-block">Ví điện tử Momo</label><br>
+            <img style="max-width:60px ; height: 60px;" src="{{ url_for('static' , filename = 'img/momo.jpg')}}"
+                 alt=""/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Xác nhận</button>
+    </form>
 </div>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

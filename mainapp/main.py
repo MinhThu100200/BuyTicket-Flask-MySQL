@@ -296,6 +296,21 @@ def payment():
     total_quantity, total_amount = dao.cart_stats(session.get('cart'))
     return render_template('payment.html', total_quantity=total_quantity, total_amount=total_amount)
 
+@app.route("/payMoMo", methods=['post'])
+@login_required
+def pay_by_momo():
+    err_msg = "Khong the thanh toan bang MOMO"
+    try:
+        if request.method == 'POST':
+            amount = 0
+            for item in session.get('cart').values():
+                amount += item['quantity'] * item['price']
+            a = payByMomo(str(amount))
+            return redirect(a)
+    except:
+        return render_template("payment.html", err_msg=err_msg)
+
+
 @app.route('/add-airport',methods=['GET','POST'])
 def add_airport():
     err_msg = ""
