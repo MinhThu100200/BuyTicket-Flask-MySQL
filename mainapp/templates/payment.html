@@ -35,6 +35,17 @@
             <td colspan="3">Không có vé nào trong giỏ</td>
         {% endif %}
     </table>
-    <input type="button" onclick="pay()" value="Thanh toán" class="btn btn-danger"/>
+    <form class="form-horizontal loginFrm" action="/payMoMo" style="text-align:center;" method="post">
+        <div class="control-group">
+            <img style="max-width:60px ; height: 60px; margin:20px 0 20px 0"
+                 src="{{ url_for('static' , filename = 'img/payByMoney.png')}}" alt=""/>
+        </div>
+        <input type="button" onclick="pay()" value="Thanh toán bằng tiền mặt" class="btn btn-danger" style=" margin-bottom: 30px"/>
+        <div class="control-group">
+            <img style="max-width:60px ; height: 60px;" src="{{ url_for('static' , filename = 'img/momo.jpg')}}"
+                 alt=""/>
+        </div>
+        <button type="submit" class="btn btn-primary">Thanh toán bằng ví Momo</button>
+    </form>
 </div>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
