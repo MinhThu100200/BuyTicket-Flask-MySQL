@@ -344,4 +344,4 @@ def pay():
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=8007)
+    app.run(debug=True, port=8888)

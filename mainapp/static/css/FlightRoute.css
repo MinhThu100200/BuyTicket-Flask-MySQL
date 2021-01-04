@@ -7,30 +7,15 @@
     outline : none;
     font-family: 'Roboto', sans-serif;
 }
-body{
 
-
-   /* background :linear-gradient(90deg,#db91e0,white);*/
-    background-repeat : no-repeat ;
-    height : 100vh ;
-    background-size : cover;
-}
-
-.forms{
-    background:rgba(0,0,0,0.5);
-    margin-left: 400px;
-    margin-right : 400px;
-    margin -bottom :0;
-    border-radius : 10px;
-    padding : 1px;
-}
 .forms h1{
     text-align :center;
-    font-size : 50px;
-    color : white ;
+    font-size : 70px;
+    margin-bottom : 50px;
+    color : #0941bb ;
 }
 .form{
-    margin :30px;
+    margin :0 100px 0 100px;
 }
 .form-group{
     color : #000000;
@@ -39,7 +24,8 @@ body{
     padding : 10px 30px 10px;
     background-color : #add8de;
     margin :0 auto;
-    width : 90%;
+    width : 100%;
+    font-size : 15px;
 }
 /*CAC NUT SUBMIT*/
 .submit-form .sub{
@@ -56,14 +42,12 @@ body{
 
     text-align : center;
     border: 1px solid;
-    min-width : 199px;
-    height :30px;
+    padding : 5px 0 5px 0;
+
 }
 .table-fixed{
-    margin-left:50px;
-    margin-top:0;
-    min-width : 603px;
-
+    margin-left:14px;
+    min-width : 97.1%;
 }
 .table-fixed thead,
 .table-fixed thead  th{
@@ -81,7 +65,7 @@ body{
 .table-fixed tbody td,
 .table-fixed thead tr th {
     float : left;
-    font-size : 14px;
+    font-size : 15px;
     text-align : center;
 }
 .table-fixed .col{
@@ -91,7 +75,7 @@ body{
     display : block;
     height : 250px;
     overflow-y :auto;
-    color : #e5fc43;
+    color : #000000;
 }
 .table-fixed tr{
     display : block;
