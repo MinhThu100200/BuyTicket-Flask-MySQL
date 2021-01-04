@@ -319,6 +319,7 @@ def add_total(cart, client):
             print(booking)
             bill = add_bill(total_amount, c['id'], user[0])
             print(bill)
+            break
 
 
 def add_ticket(pf_id, ty_id, f_id, client_id, user_id):
