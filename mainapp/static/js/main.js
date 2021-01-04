@@ -15,22 +15,40 @@ function addToDetail(id){
     });
 }
 function addToCart(id){
-    var price = document.getElementById('price');
-    fetch('api/cart', {
-        'method': 'post',
-        'body': JSON.stringify({
-            'id': id,
-            'price': price.value
+    if (confirm("Bạn chắc chắn lưu vé chưa?") == true)
+        var price = document.getElementById('price');
+        fetch('api/cart', {
+            'method': 'post',
+            'body': JSON.stringify({
+                'id': id,
+                'price': price.value
 
-        }),
-         'headers': {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            }),
+             'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
 
-        }
-    }).then(res =>res.json()).then(data =>{
-        console.log(data);
-    });
+            }
+        }).then(res =>res.json()).then(data =>{
+            console.log(data);
+            alert(data.message);
+        });
 
 }
+function pay(){
+    if (confirm("Bạn chắc chắn thanh toán chưa?") == true)
+        fetch('api/pay', {
+            'method': 'post',
+             'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+
+            }
+        }).then(res =>res.json()).then(data =>{
+            alert(data.message);
+            location.reload();
+        }).catch(err => console.log(err));
+
+}
+
 
