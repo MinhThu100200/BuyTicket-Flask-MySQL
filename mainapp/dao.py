@@ -3,7 +3,7 @@ from datetime import date, timedelta
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
 from mainapp.models import *
-from flask import render_template, redirect, request, jsonify
+from flask import render_template, redirect, request, jsonify, session
 import hashlib
 '''def get_data_label():
     labels = []
@@ -245,7 +245,7 @@ def add_client(name, phone, idcard):
     sign = add_data(query_add, val)
 
     if sign == 1:
-        return (val)
+        return(val)
 
     return None
 
@@ -253,10 +253,11 @@ def add_client(name, phone, idcard):
 def cart_stats(cart):
     count = 0
     price = 0
-    for p in cart.values():
-        count = count + p['quantity']
-        price = price + p['quantity'] * p['price']
-    return count, price
+    if cart:
+        for p in cart.values():
+            count = count + p['quantity']
+            price = price + p['quantity'] * p['price']
+        return count, price
 
 
 def add_airport(name):
@@ -276,3 +277,43 @@ def add_airport(name):
         return (val)
 
     return None
+
+
+def add_ticket(cart, client):
+    flights = Flight.query.all()
+    user = session['user']
+    total_quantity, total_amount = cart_stats(session.get('cart'))
+    id_card = []
+    for p in list(cart.values()):
+        flag = 0
+        price_flight_id = PriceFlight.query.add_columns(PriceFlight.id).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
+        price_flight_name = PriceFlight.query.add_columns(PriceFlight.name).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
+
+        '''if '1' in price_flight_name[1]:
+            for c in list(client.values()):
+                if c['id_flight_now'] == str(p['id']) and int(c['price']) == p['price']:
+                    for i in id_card:
+                        if c['id_card'] == i:
+                            flag = 1
+                if flag == 0:
+                    id_card.append(c['id_card'])
+                    ticket = Ticket(price_flight_id=price_flight_id[1], type_ticket_id=1, flight_id=int(p['id']), user_id=user['id'], client_id=int(c['id']))
+        else:
+            for c in list(client.values()):
+                if c['id_flight_now'] == str(p['id']) and int(c['price']) == p['price']:
+                    for i in id_card:
+                        if c['id_card'] == i:
+                            flag = 1
+                if flag == 0:
+                    id_card.append(c['id_card'])
+                    ticket = Ticket(price_flight_id=price_flight_id[1], type_ticket_id=2, flight_id=int(p['id']), user_id=user['id'], client_id=int(c['id']))
+        db.session.add(ticket)'''
+
+        for c in list(client.values()):
+            booking = Booking(amount_seat=p['quantity'], client_id=int(c['id']), flight_id=int(p['id']))
+            db.session.add(booking)
+            bill = Bill(money=total_amount, client_id=int(c['id']), user_id=user['id'])
+            db.session.add(bill)
+            break
+    db.session.commit()
+

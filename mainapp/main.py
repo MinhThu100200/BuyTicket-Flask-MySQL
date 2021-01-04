@@ -152,25 +152,26 @@ def schedule():
 def ticket_flight():
     clients = Client.query.all()
     price_flight = PriceFlight.query.all()
+    flights = dao.all_flight()
+
     price_list = []
     list_detail = []
     f = {}
 
-    flights = dao.all_flight()
-
     detail = session['detail']
-    # print(flights)
 
     for i in flights:
-        # print(i['id'])
+
         if i['id'] == int(detail['id']):
             dt = FlightDetail.query.add_columns(FlightDetail.inter_airport, FlightDetail.waiting_time,
                                                 FlightDetail.note). \
                 filter(FlightDetail.flights.any(id=i['id'])).all()
             f = i
+
     for p in price_flight:
         if p.flight_id == int(detail['id']):
             price_list.append(p)
+
     for d in dt:
         dic = {
             'inter_airport': d.inter_airport,
@@ -179,32 +180,51 @@ def ticket_flight():
         }
 
         list_detail.append(dic)
-    client_list = []
-    for c in clients:
-        dic = {
-            'id': c.id,
-            'name': c.name,
-            'phone': c.phone,
-            'id_card': c.idcard
-        }
-        client_list.append(dic)
+
     id = 0
+
     if request.method == 'POST':
         id_card = request.form.get('PassengerCMND')
         name = request.form.get('NamePassenger')
         phone = request.form.get('PhonePassenger')
-        price = request.form.get('price')
-        #quantity = 0
+        id_flight_now = request.form.get('ID')
+        price = request.form.get('nameprice')
+        print(price)
+        if 'client' not in session:
+            session['client'] = {}
+        client = session['client']
         for c in clients:
             if id_card == c.idcard:
                 id = c.id
-                client = c
-        if id == 0:
-            client = dao.add_client(name=name, phone=phone, idcard=id_card)
-            print(client)
-        return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list, client_list=client_list)
-    print(price_list)
-    return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list, client_list=client_list)
+                client[str(id)] = {
+                    'id': c.id,
+                    'name': c.name,
+                    'phone': c.phone,
+                    'id_card': c.idcard,
+                    'id_flight_now': id_flight_now,
+                    'price': price
+                }
+                print(client)
+                session['client'] = client
+                return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
+        if id == 0 and id_card != "" and name != "" and phone != "":
+            client_new = dao.add_client(name=name, phone=phone, idcard=id_card)
+            client[str(client_new[0])] = {
+                'id': client_new[0],
+                'name': client_new[1],
+                'phone': client_new[2],
+                'id_card': client_new[3],
+                'id_flight_now': id_flight_now,
+                'price': price
+            }
+            session['client'] = client
+        else:
+            err_msg = "Chưa nhập thông tin khách hàng"
+        #session['client'] = client
+        print(client)
+        return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
+
+    return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
 
 @app.route('/api/cart', methods=['GET', 'POST'])
 def add_to_cart():
@@ -212,21 +232,25 @@ def add_to_cart():
        session['cart'] = {}
     cart = session['cart']
     data = request.json
+    id_cart = str(data.get('id')) + data.get('price')
     id = str(data.get('id'))
     price = int(data.get('price'))
     print(price)
-    if id in cart and cart[id]['price'] == price:
-        cart[id]['quantity'] = cart[id]['quantity'] + 1
+    if id_cart in cart and cart[id_cart]['price'] == price:
+        cart[id_cart]['quantity'] = cart[id_cart]['quantity'] + 1
     else:
-        cart[id] = {
+        cart[id_cart] = {
             'id': id,
             'price': price,
             'quantity': 1
         }
 
     session['cart'] = cart
+    print(cart)
     total_quantity, total_amount = dao.cart_stats(session.get('cart'))
+    #print(dao.cart_stats(session.get('cart')))
     return jsonify({
+        'message': "Lưu vé thành công nhé!",
         'total_quantity': total_quantity,
         'total_amount': total_amount,
         'cart': cart
@@ -288,6 +312,16 @@ def add_airport():
             err_msg = "Đã có sân bay này"
     return render_template('add-airport.html', err_msg=err_msg)
 
+@app.route('/api/pay', methods=['GET', 'POST'])
+def pay():
+    if 'cart' in session and session['cart']:
+        dao.add_ticket(cart=session['cart'], client=session['client'])
+        del session['cart']
+        del session['client']
+        return jsonify({'message': 'successful'})
+
+    return jsonify({'message': 'failed'})
+
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=8003)
+    app.run(debug=True, port=8007)

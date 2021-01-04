@@ -1,0 +1,27 @@
+    <title>Add Airport</title>
+      <link href="../static/css/AddAirport.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="forms">
+     <form class="form" method="post">
+            <h1>THÊM TUYẾN BAY</h1>
+                {% if err_msg %}
+				<div class="alert alert-danger">
+					{{ err_msg }}
+				</div>
+				{% endif %}
+                 <div class="form-group">
+                 <label for = "nma">Tên sân bay:</label>
+                 <input type="text" class="form-control" name="NameAirport" id="nma">
+                </div>
+
+                 <div class="submit-form">
+                <input class="sub" type = "submit"  value ="THÊM">
+                </div>
+     </form>
+    </div>
+</body>
