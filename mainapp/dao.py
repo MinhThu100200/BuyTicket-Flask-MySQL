@@ -5,6 +5,64 @@ from pychartjs import BaseChart, ChartType, Color
 from mainapp.models import *
 from flask import render_template, redirect, request, jsonify, session
 import hashlib
+import json
+import uuid
+import hmac
+from urllib.request import urlopen, Request
+#region payMomo
+def payByMomo(Amount):
+	endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
+	partnerCode = "MOMOS5MZ20201231"
+	accessKey = "8B7pbIkKMSp9XKB5"
+	serectkey = "AWV3hM9STH982MdyHyQ9OfRodyx9mTH8"
+	orderInfo = "Thanh toán vé máy bay "
+	returnUrl = "https://momo.vn/return"
+	notifyurl = "https://dummy.url/notify"
+	amount = Amount
+	orderId = str(uuid.uuid4())
+	requestId = str(uuid.uuid4())
+	requestType = "captureMoMoWallet"
+	extraData = "merchantName=;merchantId=" #pass empty value if your merchant does not have stores else merchantName=[storeName]; merchantId=[storeId] to identify a transaction map with a physical store
+
+	#before sign HMAC SHA256 with format
+	#partnerCode=$partnerCode&accessKey=$accessKey&requestId=$requestId&amount=$amount&orderId=$oderId&orderInfo=$orderInfo&returnUrl=$returnUrl&notifyUrl=$notifyUrl&extraData=$extraData
+	rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData
+	#
+	# #puts raw signature
+	# print("--------------------RAW SIGNATURE----------------")
+	print(rawSignature)
+	#signature
+	h = hmac.new( bytes(serectkey , 'utf-8'), rawSignature.encode('utf8'), hashlib.sha256 )
+	signature = h.hexdigest()
+	print("--------------------SIGNATURE----------------")
+	print(signature)
+
+	#json object send to MoMo endpoint
+
+	data = {
+			'partnerCode' : partnerCode,
+			'accessKey' : accessKey,
+			'requestId' : requestId,
+			'amount' : amount,
+			'orderId' : orderId,
+			'orderInfo' : orderInfo,
+			'returnUrl' : returnUrl,
+			'notifyUrl' : notifyurl,
+			'extraData' : extraData,
+			'requestType' : requestType,
+			'signature' : signature
+	}
+
+	data = json.dumps(data).encode('utf-8')
+	clen =len(data)
+	req = Request(endpoint , data , {'Content-Type': 'application/json', 'Content-Length' :clen})
+	f = urlopen(req)
+	response = f.read()
+	f.close()
+	return json.loads(response)['payUrl']
+#endregion
+
+
 def query(id):
     if (id == "1"):
         return "Select Year(datetime_bill) as 'Nam', Sum(money) as 'Doanh thu' From saledb.bill Group by Year(datetime_bill)"
@@ -304,7 +362,6 @@ def add_airport(name):
 
     if sign == 1:
         return (val)
-
     return None
 
 
