@@ -294,7 +294,11 @@ def ticket():
 
 @app.route('/pay')
 def payment():
-    total_quantity, total_amount = dao.cart_stats(session.get('cart'))
+    total_amount = 0
+    total_quantity = 0
+    if 'cart' in session and session['cart']:
+        total_quantity, total_amount = dao.cart_stats(session.get('cart'))
+
     return render_template('payment.html', total_quantity=total_quantity, total_amount=total_amount)
 
 @app.route('/add-airport',methods=['GET','POST'])
@@ -315,7 +319,9 @@ def add_airport():
 @app.route('/api/pay', methods=['GET', 'POST'])
 def pay():
     if 'cart' in session and session['cart']:
-        dao.add_ticket(cart=session['cart'], client=session['client'])
+        cart = session['cart']
+        client = session['client']
+        dao.add_total(cart, client)
         del session['cart']
         del session['client']
         return jsonify({'message': 'successful'})
