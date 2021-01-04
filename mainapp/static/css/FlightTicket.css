@@ -18,7 +18,7 @@ margin :0 100px;
 color : #000000;
 }
 .forms .submit-form .sub{
-margin : 20px 0 0px 75px ;
+margin : 20px 170px 0px 170px ;
 background-color: grey;
 border: none;
 color: white;
@@ -32,6 +32,6 @@ width : 200px;
 display:flex;
 }
 .row-group .form-group{
-width : 400px;
+width : 600px;
 margin :5px ;
 }
