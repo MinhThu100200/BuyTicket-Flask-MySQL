@@ -364,41 +364,100 @@ def add_airport(name):
         return (val)
     return None
 
-def add_ticket(cart, client):
-    flights = Flight.query.all()
+
+def add_total(cart, client):
     user = session['user']
     total_quantity, total_amount = cart_stats(session.get('cart'))
-    id_card = []
+    card = []
     for p in list(cart.values()):
         flag = 0
         price_flight_id = PriceFlight.query.add_columns(PriceFlight.id).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
         price_flight_name = PriceFlight.query.add_columns(PriceFlight.name).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
 
-        '''if '1' in price_flight_name[1]:
+        if '1' in price_flight_name[1]:
             for c in list(client.values()):
-                if c['id_flight_now'] == str(p['id']) and int(c['price']) == p['price']:
-                    for i in id_card:
+                if int(c['id_flight_now']) == int(p['id']) and int(c['price']) == p['price']:
+                    for i in card:
                         if c['id_card'] == i:
                             flag = 1
                 if flag == 0:
-                    id_card.append(c['id_card'])
-                    ticket = Ticket(price_flight_id=price_flight_id[1], type_ticket_id=1, flight_id=int(p['id']), user_id=user['id'], client_id=int(c['id']))
+                    card.append(c['id_card'])
+                    print(type(price_flight_id[1]))
+                    print(type(p['id']))
+                    print(type(c['id']))
+                    print(type(user[0]))
+
+                    ticket = add_ticket(price_flight_id[1], 1, p['id'], c['id'], user[0])
+                    print(ticket)
+
         else:
             for c in list(client.values()):
                 if c['id_flight_now'] == str(p['id']) and int(c['price']) == p['price']:
-                    for i in id_card:
+                    for i in card:
                         if c['id_card'] == i:
                             flag = 1
                 if flag == 0:
-                    id_card.append(c['id_card'])
-                    ticket = Ticket(price_flight_id=price_flight_id[1], type_ticket_id=2, flight_id=int(p['id']), user_id=user['id'], client_id=int(c['id']))
-        db.session.add(ticket)'''
-
+                    card.append(c['id_card'])
+                    ticket = add_ticket(price_flight_id[1], 2, p['id'], c['id'], user[0])
+                    print(ticket)
         for c in list(client.values()):
-            booking = Booking(amount_seat=p['quantity'], client_id=int(c['id']), flight_id=int(p['id']))
-            db.session.add(booking)
-            bill = Bill(money=total_amount, client_id=int(c['id']), user_id=user['id'])
-            db.session.add(bill)
+            booking = add_booking(p['quantity'], c['id'], p['id'])
+            print(booking)
+            bill = add_bill(total_amount, c['id'], user[0])
+            print(bill)
             break
-    db.session.commit()
 
+
+def add_ticket(pf_id, ty_id, f_id, client_id, user_id):
+    query = "SELECT * FROM ticket"
+    tickets = read_data(query)
+
+    id = len(tickets) + 1
+    price_flight_id = int(pf_id)
+    type_id = int(ty_id)
+    flight_id = int(f_id)
+    client_id = int(client_id)
+    user_id = int(user_id)
+    query_add = "INSERT INTO ticket (id,status,price_flight_id,type_ticket_id,flight_id,client_id,user_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    val = (id, 1, price_flight_id, type_id, flight_id, client_id, user_id)
+    sign = add_data(query_add, val)
+
+    if sign == 1:
+        return val
+
+    return None
+
+def add_booking(amount_seat, client_id, flight_id):
+    query = "SELECT * FROM booking"
+    bookings = read_data(query)
+
+    id = len(bookings) + 1
+    amount_seat = int(amount_seat)
+    datetime_booking = date.today()
+    client_id = int(client_id)
+    flight_id = int(flight_id)
+    query_add = "INSERT INTO booking (id,datetime_booking,amount_seat,client_id,flight_id) VALUES (%s,%s,%s,%s,%s)"
+    val = (id, datetime_booking, amount_seat, client_id, flight_id)
+    sign = add_data(query_add, val)
+
+    if sign == 1:
+        return (val)
+
+    return None
+def add_bill(money, client_id, user_id):
+    query = "SELECT * FROM bill"
+    bills = read_data(query)
+
+    id = len(bills) + 1
+    money = int(money)
+    datetime_booking = date.today()
+    client_id = int(client_id)
+    user_id = int(user_id)
+    query_add = "INSERT INTO bill (id,datetime_bill,money,client_id,user_id) VALUES (%s,%s,%s,%s,%s)"
+    val = (id, datetime_booking, money, client_id, user_id)
+    sign = add_data(query_add, val)
+
+    if sign == 1:
+        return val
+
+    return None
