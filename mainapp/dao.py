@@ -5,61 +5,91 @@ from pychartjs import BaseChart, ChartType, Color
 from mainapp.models import *
 from flask import render_template, redirect, request, jsonify
 import hashlib
-'''def get_data_label():
+def query(id):
+    if (id == "1"):
+        return "Select Year(datetime_bill) as 'Nam', Sum(money) as 'Doanh thu' From saledb.bill Group by Year(datetime_bill)"
+    elif (id == "2"):
+        return "SELECT DATE_FORMAT(datetime_bill, '%m-%Y') , SUM(money) AS DOANHTHU FROM saledb.bill GROUP BY DATE_FORMAT(datetime_bill, '%m-%Y') ORDER BY datetime_bill ASC"
+    elif (id == "3"):
+        return "SELECT * FROM Bill"
+    elif (id == "4"):
+        return "SELECT * FROM Bill"
+def get_data_label(query):
     labels = []
-
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    data = []
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
-
-            sql = "SELECT * FROM revenuemonth"
+            sql = query
             cursor.execute(sql)
-
             x = cursor.fetchall()
-            for id in x:
-               labels.append(str(id[0]))
+            for item in x:
+                labels.append(str(item[0]))
+                data.append(str(item[1]))
     finally:
         connection.close()
-    return labels
+    return labels, data
 
-def get_data_value():
-
-    values = []
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
-    try:
-        with connection.cursor() as cursor:
-
-            sql = "SELECT * FROM revenuemonth"
-            cursor.execute(sql)
-
-            x = cursor.fetchall()
-            for value in x:
-                values.append(int(value[2]))
-
-    finally:
-        connection.close()
-    return values
-class MyBarGraph(BaseChart):
-
-    type = ChartType.Pie
+class MyBarGraphYears(BaseChart):
+    type = ChartType.Bar
     class labels:
-        group = get_data_label()
+        group = get_data_label(query("1")).__getitem__(0)
     class data:
-        #label = labels
-        data = get_data_value()
-        backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
-        borderColor = Color.Olive
-def draw_chart():
-    NewChart = MyBarGraph()
-    NewChart.data.label = "Revenue by Year"
-    # can change data after creation
-    if NewChart.data.data == []:
-        NewChart.data.data = [45, 67, 50, 23, 45, 67, 90, 12, 56, 78, 90, 170]
+        # label = labels
+        data = get_data_label(query("1")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Cyan
+        backgroundColor = Color.Green
+    class options:
+        title = {"text": "DOANH THU QUA CÁC NĂM ", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                 "ticks": {
+                     "beginAtZero": True,
+                 }
+                 }
+            ]
+        }
+
+class MyBarGraphMonthly(BaseChart):
+    type = ChartType.Bar
+
+    class labels:
+        group = get_data_label(query("2")).__getitem__(0)
+
+    class data:
+        # label = labels
+        data = get_data_label(query("2")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Cyan
+        backgroundColor = Color.Green
+
+    class options:
+        title = {"text": "DOANH THU QUA CÁC THÁNG", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
+            ]
+        }
+def draw_chart(type):
+    if (type == "1"):
+        NewChart = MyBarGraphYears()
+    if (type == "2"):
+        NewChart = MyBarGraphMonthly()
+    if (type == "3"):
+        NewChart = MyBarGraphMonthly()
+    if (type == "4"):
+        NewChart = MyBarGraphMonthly()
     ChartJSON = NewChart.get()
-    return jsonify(ChartJSON)
-'''
+    return ChartJSON
+
 def read_data(query):
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -68,7 +98,7 @@ def read_data(query):
         connection.close()
     return x
 def read_data_para(query, val):
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -77,7 +107,7 @@ def read_data_para(query, val):
         connection.close()
     return x
 def add_data(query, val):
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -125,7 +155,7 @@ def get_id(query, val):
 
     data = 0
 
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
 
     try:
         with connection.cursor() as cursor:
@@ -141,7 +171,7 @@ def get_data_list_1(query):
 
     data = []
 
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -227,3 +257,4 @@ def all_flight():
             list_flight.append(dic)
 
     return (list_flight)
+
