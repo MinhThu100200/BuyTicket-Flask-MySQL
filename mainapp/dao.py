@@ -221,7 +221,6 @@ def get_name(id):
     return name_air
 
 def all_flight():
-
     list_flight = []
 
     l1 = Flight.query.join(FlightRoute). \

@@ -1,56 +1,51 @@
-<head>
-<title>Manage Flight</title>
-    <link href="../static/css/manageFlight.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link href="../static/css/manageFlight.css" rel="stylesheet"/>
 
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
-</head>
-<body>
-    <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});" method="post">
-        <form class="form">
-            <h1>QUẢN LÝ CHUYẾN BAY</h1>
-                <div class ="topic-table" >
-                <b>Danh sách chuyến bay</b>
-            </div>
+{% extends 'base/base.html' %}
+{% block header %}
 
-            <div class ="form-group">
-                <div class="row">
+{% endblock %}
+{% block content %}
+
+<div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});" method="post">
+    <form class="form">
+        <h1>QUẢN LÝ CHUYẾN BAY</h1>
+        <div class="topic-table">
+            <b>Danh sách chuyến bay</b>
+        </div>
+        <div class="form-group">
+            <div class="row">
                 <table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
 
-                        <thead>
-                            <tr>
-                                <th class = "col">Sân bay đi</th>
-                                <th class = "col">Sân bay đến</th>
-                                <th class = "col">Khởi hành</th>
-                                <th class = "col">Số ghế trống</th>
-                                <th class = "col">Số ghế đặt</th>
-                            </tr>
-                        </thead>
+                    <thead>
+                    <tr>
+                        <th class="col">Sân bay đi</th>
+                        <th class="col">Sân bay đến</th>
+                        <th class="col">Khởi hành</th>
+                        <th class="col">Số ghế trống</th>
+                        <th class="col">Số ghế đặt</th>
+                    </tr>
+                    </thead>
                     {% if list_flight %}
-                        <tbody>
-                            {% for f in list_flight %}
-                                <tr>
+                    <tbody>
+                    {% for f in list_flight %}
+                    <tr>
 
-                                    <td class = "col"><a onclick="addToDetail({{f.id}})" href="{{ url_for('schedule') }}">{{f.name1[1]}}</a></td>
-                                <td class = "col">{{f.name2[1]}}</td>
-                                <td class = "col">{{f.date_from}}</td>
-                                <td class = "col">{{f.empty}}</td>
-                                    <td class = "col">{{f.booked}}</td>
+                        <td class="col"><a onclick="addToDetail({{f.id}})" href="{{ url_for('schedule') }}">{{f.name1[1]}}</a>
+                        </td>
+                        <td class="col">{{f.name2[1]}}</td>
+                        <td class="col">{{f.date_from}}</td>
+                        <td class="col">{{f.empty}}</td>
+                        <td class="col">{{f.booked}}</td>
 
 
-                                </tr>
-                          {% endfor %}
-                        </tbody>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
                     {% endif %}
                 </table>
-                      </div>
             </div>
+        </div>
 
-        </form>
-    </div>
-
-</body>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</html>
+    </form>
+</div>
+{% endblock %}

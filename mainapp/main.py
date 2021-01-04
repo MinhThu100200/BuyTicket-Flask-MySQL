@@ -115,7 +115,6 @@ def add_flight():
 
 @app.route('/manage-flight',methods=["GET","POST"])
 def flight(): #tat ca chuyen bay ngay hom nay
-
     list_flight = dao.all_flight()
     return render_template('manage-flight.html', list_flight=list_flight)
 
@@ -300,7 +299,6 @@ def payment():
 @app.route('/add-airport',methods=['GET','POST'])
 def add_airport():
     err_msg = ""
-
     if request.method == 'POST':
         name = request.form.get('NameAirport')
         air = dao.add_airport(name)
@@ -321,6 +319,7 @@ def pay():
         return jsonify({'message': 'successful'})
 
     return jsonify({'message': 'failed'})
+
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
