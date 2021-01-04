@@ -225,7 +225,7 @@ def all_flight():
     list_flight = []
 
     l1 = Flight.query.join(FlightRoute). \
-        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, Flight.date_flight_to, FlightRoute.id_airport1,
+        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name, Flight.date_flight_to, FlightRoute.id_airport1,
                     FlightRoute.id_airport2, Flight.plane_id). \
                     filter(Flight.flight_route_id == FlightRoute.id).all()
 
@@ -242,8 +242,10 @@ def all_flight():
                     booked = Booking.query.filter(i.id == Booking.flight_id).count()
             dic = {
                 'id': i.id,
+                'name': i.name,
                 'name1': name1,
                 'name2': name2,
+                'flight_name': i.name,
                 'date_from': i.date_flight_from,
                 'time_begin': i.time_begin,
                 'date_end': i.date_flight_to,
@@ -258,3 +260,49 @@ def all_flight():
 
     return (list_flight)
 
+
+def add_client(name, phone, idcard):
+    query = "SELECT * FROM client"
+    clients = read_data(query)
+
+    id = len(clients) + 1
+    name = name.strip()
+    phone = phone.strip()
+    idcard = idcard.strip()
+
+    query_add = "INSERT INTO client (id,name,phone,idcard) VALUES (%s,%s,%s,%s)"
+    val = (id, name, phone, idcard)
+    sign = add_data(query_add, val)
+
+    if sign == 1:
+        return (val)
+
+    return None
+
+
+def cart_stats(cart):
+    count = 0
+    price = 0
+    for p in cart.values():
+        count = count + p['quantity']
+        price = price + p['quantity'] * p['price']
+    return count, price
+
+
+def add_airport(name):
+    query = "SELECT * FROM airport"
+    airports = read_data(query)
+    air = Airport.query.all()
+    id = len(airports) + 1
+    name = name.strip()
+    for a in air:
+        if name == a.name:
+            return None
+    query_add = "INSERT INTO airport (id,name) VALUES (%s,%s)"
+    val = (id, name)
+    sign = add_data(query_add, val)
+
+    if sign == 1:
+        return (val)
+
+    return None

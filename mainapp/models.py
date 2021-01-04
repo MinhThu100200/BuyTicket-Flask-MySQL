@@ -32,7 +32,6 @@ class Client(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
     phone = Column(String(50), nullable=False)
-    address = Column(String(100), nullable=False)
     idcard = Column(String(50), nullable=False, unique=True)
     tickets = relationship('Ticket', backref='client', lazy=True)
     bookings = relationship('Booking', backref='client', lazy=True)
@@ -64,9 +63,11 @@ class FlightRoute(db.Model):
     __tablename__ = 'flightroute'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50))
     id_airport1 = Column(Integer, default=1)
     id_airport2 = Column(Integer, default=2)
     flights = relationship('Flight', backref='flightroute', lazy=True)
+
 
 
 flights_flightdetails_association = db.Table('flight_flightdetail',
@@ -98,15 +99,18 @@ class Flight(db.Model):
     plane_id = Column(Integer, ForeignKey(Plane.id), nullable=False)
     tickets = relationship('Ticket', backref='flight', lazy=True)
     bookings = relationship('Booking', backref='flight', lazy=True)
-
+    price_flights = relationship('PriceFlight', backref='fligth', lazy=True)
 
 class PriceFlight(db.Model):
     __tablename__ = 'priceflight'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    usd = Column(Integer, default=0)
+    name = Column(String(20))
     vnd = Column(Integer, default=0)
+    flight_id = Column(Integer, ForeignKey(Flight.id), nullable=False)
     tickets = relationship('Ticket', backref='priceflight', lazy=True)
+
+
 
 typetickets_bookings_association = db.Table('typeticket_booking',
     Column('typeticket_id', Integer, ForeignKey('typeticket.id'), primary_key=True),
@@ -122,8 +126,7 @@ class TypeTicket(db.Model):
     bookings = relationship('Booking', secondary=typetickets_bookings_association,
                             lazy='subquery', backref=backref('TypeTicket', lazy=True))
 
-    def __str__(self):
-        return self.name
+
 
 class Ticket(db.Model):
     __tablename__ = 'ticket'

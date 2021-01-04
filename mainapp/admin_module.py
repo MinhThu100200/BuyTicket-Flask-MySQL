@@ -81,6 +81,15 @@ class UserModelView(ModelView):
         # redirect to login page if user doesn't have access
         return redirect('/admin')
 
+class AirportModelView(ModelView):
+    column_display_pk = True
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect('/admin')
+
 
 class FlightModelView(ModelView):
     column_display_pk = True
@@ -191,7 +200,7 @@ admin.add_view(ModelView(PriceFlight, db.session))
 admin.add_view(ModelView(Bill, db.session))
 admin.add_view(ModelView(Ticket, db.session))
 admin.add_view(ModelView(TypeTicket, db.session))
-admin.add_view(ModelView(Airport, db.session))
+admin.add_view(AirportModelView(Airport, db.session))
 admin.add_view(ModelView(Client, db.session))
 admin.add_view(ChartView(name="CHART"))
 admin.add_view(AboutUs(name="About Us"))

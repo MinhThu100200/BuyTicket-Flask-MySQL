@@ -102,24 +102,10 @@ def add_flight():
     data = request.json
     print(data)
     id = str(data.get('id'))
-    name1 = data.get('name1')
-    name2 = data.get('name2')
-    date_from = data.get('date_from')
-    time_begin = data.get('time_begin')
-    date_end = data.get('date_end')
-    time_end = data.get('time_end')
-    amount_of_seat1 = data.get('amount_of_seat1')
-    amount_of_seat2 = data.get('amount_of_seat2')
+
     detail = {
-        'id': id,
-        'name1': name1,
-        'name2': name2,
-        'date_from': date_from,
-        'time_begin': time_begin,
-        'date_end': date_end,
-        'time_end': time_end,
-        'amount_of_seat1': amount_of_seat1,
-        'amount_of_seat2': amount_of_seat2
+        'id': id
+
     }
     session['detail'] = detail
     print(detail)
@@ -162,8 +148,11 @@ def schedule():
     #print(f, list_detail)
     return render_template('schedule.html', f=f, list_detail=list_detail)
 
-@app.route('/ticket')
-def ticket():
+@app.route('/ticket-flight', methods=['GET', 'POST'])
+def ticket_flight():
+    clients = Client.query.all()
+    price_flight = PriceFlight.query.all()
+    price_list = []
     list_detail = []
     f = {}
 
@@ -179,7 +168,9 @@ def ticket():
                                                 FlightDetail.note). \
                 filter(FlightDetail.flights.any(id=i['id'])).all()
             f = i
-
+    for p in price_flight:
+        if p.flight_id == int(detail['id']):
+            price_list.append(p)
     for d in dt:
         dic = {
             'inter_airport': d.inter_airport,
@@ -188,10 +179,59 @@ def ticket():
         }
 
         list_detail.append(dic)
+    client_list = []
+    for c in clients:
+        dic = {
+            'id': c.id,
+            'name': c.name,
+            'phone': c.phone,
+            'id_card': c.idcard
+        }
+        client_list.append(dic)
+    id = 0
     if request.method == 'POST':
-        pass
-    # print(f, list_detail)
-    return render_template('ticket.html', f=f, list_detail=list_detail)
+        id_card = request.form.get('PassengerCMND')
+        name = request.form.get('NamePassenger')
+        phone = request.form.get('PhonePassenger')
+        price = request.form.get('price')
+        #quantity = 0
+        for c in clients:
+            if id_card == c.idcard:
+                id = c.id
+                client = c
+        if id == 0:
+            client = dao.add_client(name=name, phone=phone, idcard=id_card)
+            print(client)
+        return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list, client_list=client_list)
+    print(price_list)
+    return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list, client_list=client_list)
+
+@app.route('/api/cart', methods=['GET', 'POST'])
+def add_to_cart():
+    if 'cart' not in session:
+       session['cart'] = {}
+    cart = session['cart']
+    data = request.json
+    id = str(data.get('id'))
+    price = int(data.get('price'))
+    print(price)
+    if id in cart and cart[id]['price'] == price:
+        cart[id]['quantity'] = cart[id]['quantity'] + 1
+    else:
+        cart[id] = {
+            'id': id,
+            'price': price,
+            'quantity': 1
+        }
+
+    session['cart'] = cart
+    total_quantity, total_amount = dao.cart_stats(session.get('cart'))
+    return jsonify({
+        'total_quantity': total_quantity,
+        'total_amount': total_amount,
+        'cart': cart
+    })
+
 
 @app.route('/manage-airport',methods=["GET"])
 def airport():
@@ -218,7 +258,36 @@ def route():
     #print(list_route)
 
     return render_template('manage-flight-route.html', list_route=list_route)
+@app.route('/api/client',methods=["GET","POST"])
+def ticket():
+
+    if 'client' not in session:
+        session['client'] = {}
+    detail = session['client']
+    data = request.json
+    print(data)
+    return jsonify('sus')
+
+@app.route('/pay')
+def payment():
+    total_quantity, total_amount = dao.cart_stats(session.get('cart'))
+    return render_template('payment.html', total_quantity=total_quantity, total_amount=total_amount)
+
+@app.route('/add-airport',methods=['GET','POST'])
+def add_airport():
+    err_msg = ""
+
+    if request.method == 'POST':
+        name = request.form.get('NameAirport')
+        air = dao.add_airport(name)
+        print(air)
+        if air:
+            err_msg = "Thêm thành công"
+            return render_template('add-airport.html', err_msg=err_msg)
+        else:
+            err_msg = "Đã có sân bay này"
+    return render_template('add-airport.html', err_msg=err_msg)
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=5008)
+    app.run(debug=True, port=8003)
