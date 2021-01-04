@@ -1,21 +1,19 @@
-<head>
-    <title>Manage Flight Route</title>
-     <link href="../static/css/FlightRoute.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
-</head>
-<body>
-    <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
-        <form class="form">
-            <h1>QUẢN LÝ TUYẾN BAY</h1>
-             <div class ="topic-table" >
-                <b>Thông tin các tuyến bay</b>
-            </div>
+<link href="../static/css/FlightRoute.css" rel="stylesheet"/>
+{% extends 'base/base.html' %}
 
-            <div class ="form-group">
-                <div class="row">
+{% block header %}
+
+{% endblock %}
+{% block content %}
+<div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
+    <form class="form">
+        <h1>QUẢN LÝ TUYẾN BAY</h1>
+        <div class="topic-table">
+            <b>Thông tin các tuyến bay</b>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
                 <table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
                     <thead>
                     <tr>
@@ -26,59 +24,58 @@
                     </thead>
 
                     <tbody>
-                        {% if list_route %}
-                        <tr >
-                            {% for f in list_route %}
-                            <td class="col">{{f.id}}</td>
-                            <td class="col">{{f.name1}}</td>
-                            <td class="col">{{f.name2}}</td>
-                            {% endfor %}
-                        </tr>
-                        {% else %}
-                        <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                        <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                     <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                     <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                     <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                     <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                     <tr >
-                            <td class="col">ĐN-HN</td>
-                            <td class="col">ĐN</td>
-                            <td class="col">HN</td>
-                        </tr>
-                        {% endif %}
+                    {% if list_route %}
+                    <tr>
+                        {% for f in list_route %}
+                        <td class="col">{{f.id}}</td>
+                        <td class="col">{{f.name1}}</td>
+                        <td class="col">{{f.name2}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    <tr>
+                        <td class="col">ĐN-HN</td>
+                        <td class="col">ĐN</td>
+                        <td class="col">HN</td>
+                    </tr>
+                    {% endif %}
                     </tbody>
 
                 </table>
-                </div>
             </div>
-            <br>
-        </form>
-    </div>
+        </div>
+        <br>
+    </form>
+</div>
 
-</body>
-</html>
+{% endblock %}

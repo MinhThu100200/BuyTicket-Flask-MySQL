@@ -38,27 +38,23 @@ class SignupModelView(BaseView):
         # redirect to login page if user doesn't have access
         return redirect('/admin')
 
-'''class ReportMonthView(BaseView):
+class ChartView(BaseView):
     @expose('/', methods=['get','post'])
     def report(self):
-
         if request.method == 'GET':
             return self.render('/admin/chart.html')
 
         if request.method == 'POST':
             type = request.form.get('typechart')
-            if type == '1':
-                #print(ChartJSON)
-                return draw_chart()
-            else:
-                return redirect('/admin')
+            return self.render('/admin/chart.html' , chartJSON = draw_chart(type))
+        return redirect('/admin')
     def is_accessible(self):
         return current_user.is_authenticated
 
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
         return redirect('/admin')
-'''
+
 class AboutUs(BaseView):
     @expose('/')
     def index(self):
@@ -198,10 +194,7 @@ admin.add_view(FlightModelView(Flight, db.session))
 admin.add_view(UserModelView(User, db.session))
 admin.add_view(FlightDetailModelView(FlightDetail, db.session))
 admin.add_view(BookingViewModel(Booking, db.session))
-admin.add_view(AboutUs(name="About Us"))
 admin.add_view(FlightRouteModelView(FlightRoute, db.session))
-admin.add_view(SignupModelView(name="Signup"))
-admin.add_view(LogoutView(name="Logout"))
 admin.add_view(ModelView(Plane, db.session))
 admin.add_view(ModelView(PriceFlight, db.session))
 admin.add_view(ModelView(Bill, db.session))
@@ -209,4 +202,8 @@ admin.add_view(ModelView(Ticket, db.session))
 admin.add_view(ModelView(TypeTicket, db.session))
 admin.add_view(AirportModelView(Airport, db.session))
 admin.add_view(ModelView(Client, db.session))
+admin.add_view(ChartView(name="CHART"))
+admin.add_view(AboutUs(name="About Us"))
+admin.add_view(SignupModelView(name="Signup"))
+admin.add_view(LogoutView(name="Logout"))
 

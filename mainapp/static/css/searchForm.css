@@ -8,18 +8,18 @@
     font-family: 'Roboto', sans-serif;
 }
 body{
-
     background-image: url("../images/bgd.jpg") ;
    /* background :linear-gradient(90deg,#db91e0,white);*/
     background-repeat : no-repeat ;
     height : 100vh ;
+    width : 100%;
     background-size : cover;
 }
 
 .forms{
     background:rgba(0,0,0,0.5);
-    margin-left: 400px;
-    margin-right : 400px;
+    margin-left: 300px;
+    margin-right : 300px;
     margin -bottom :0;
     border-radius : 10px;
     padding : 1px;

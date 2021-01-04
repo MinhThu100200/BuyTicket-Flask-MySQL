@@ -1,101 +1,96 @@
-<head>
-    <meta charset="UTF-8">
-    <title>Flight Ticket</title>
-    <link href="../static/css/FlightTicket.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="../static/css/FlightTicket.css" rel="stylesheet"/>
+{% extends 'base/base.html' %}
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
-</head>
-<body>
-    <div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
-     <form class="form" method="post">
-            <h1>VÉ CHUYẾN BAY</h1>
-         {% if 'detail' in session and session['detail'] %}
-                 <div class="form-group">
-                  <label>Mã chuyến bay:</label>
-                 <input type="text" class="form-control" name="ID" value="{{f.id}}">
-                 </div>
-            <div class="row-group">
-                 <div class="form-group">
-                     <label>Sân bay đi:</label>
-                     <input type="text" class="form-control" name="NameAirport" value="{{f.name1[1]}}">
-                </div>
-                 <div class="form-group">
-                    <label>Sân bay đến:</label>
-                    <input type="text" class="form-control" name="IDFlight" value="{{f.name2[1]}}">
-                </div>
+{% block header %}
+
+{% endblock %}
+{% block content %}
+<div class="forms" style="background-image: url({{ url_for('static',filename='img/bgd.jpg') }});">
+    <form class="form" method="post">
+        <h1>VÉ CHUYẾN BAY</h1>
+        {% if 'detail' in session and session['detail'] %}
+        <div class="form-group">
+            <label>Mã chuyến bay:</label>
+            <input type="text" class="form-control" name="ID" value="{{f.id}}">
+        </div>
+        <div class="row-group">
+            <div class="form-group">
+                <label>Sân bay đi:</label>
+                <input type="text" class="form-control" name="NameAirport" value="{{f.name1[1]}}">
             </div>
-            <div class="row-group">
-                 <div class="form-group">
-                     <label>Ngày</label>
-                     <input type="text" class="form-control" value="{{f.date_from}}">
-                </div>
-                <div class="form-group">
-                    <label>Tình trạng vé:</label>
-                    <input type="text" class="form-control" name="Status" value="Còn hạn">
-                </div>
+            <div class="form-group">
+                <label>Sân bay đến:</label>
+                <input type="text" class="form-control" name="IDFlight" value="{{f.name2[1]}}">
             </div>
-
-            <div class="row-group">
-                 <div class="form-group">
-                    <label>Mã khách hàng:</label>
-                    <input type="text" class="form-control" name="IDPassenger">
-                </div>
-
-                 <div class="form-group">
-                    <label>CMND:</label>
-                    <input type="text" id="idcard" class="form-control" name="PassengerCMND">
-                </div>
+        </div>
+        <div class="row-group">
+            <div class="form-group">
+                <label>Ngày</label>
+                <input type="text" class="form-control" value="{{f.date_from}}">
             </div>
-            <div class="row-group">
-                 <div class="form-group">
-                    <label>Hành khách:</label>
-                    <input id="name" type="text" class="form-control" name="NamePassenger">
-                </div>
+            <div class="form-group">
+                <label>Tình trạng vé:</label>
+                <input type="text" class="form-control" name="Status" value="Còn hạn">
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label>Điện thoại:</label>
-                    <input type="text" class="form-control" name="PhonePassenger">
-                </div>
+        <div class="row-group">
+            <div class="form-group">
+                <label>Mã khách hàng:</label>
+                <input type="text" class="form-control" name="IDPassenger">
             </div>
 
-            <div class="row-group">
-                <div class="form-group">
-                    <label>Hạng vé:</label>
-                    <select class="form-control" >
-                        <option>Hạng nhất</option>
-                        <option>Hạng nhì</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Giá vé:</label>
-                    <select class="form-control"name="nameprice">
-                        {% for p in price_list %}
-                        <option id="price" value="{{p.vnd}}">{{p.vnd}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div class="form-group">
+                <label>CMND:</label>
+                <input type="text" id="idcard" class="form-control" name="PassengerCMND">
+            </div>
+        </div>
+        <div class="row-group">
+            <div class="form-group">
+                <label>Hành khách:</label>
+                <input id="name" type="text" class="form-control" name="NamePassenger">
             </div>
 
-         <div class="row-group">
-                <div class="submit-form">
-                    <input onclick="addToCart({{f.id}})" class="sub" value="Lưu lại" readonly>
-                </div>
-                <div class="submit-form">
-                    <button class="sub">Tạo mới</button>
-                </div>
+            <div class="form-group">
+                <label>Điện thoại:</label>
+                <input type="text" class="form-control" name="PhonePassenger">
+            </div>
+        </div>
 
-             </div>
-             <br>
-             <br>
-             <div class="submit-form">
-                 <center><a href="{{url_for('payment')}}" class="sub" type = "submit">Thanh toán</a></center>
-             </div>
+        <div class="row-group">
+            <div class="form-group">
+                <label>Hạng vé:</label>
+                <select class="form-control">
+                    <option>Hạng nhất</option>
+                    <option>Hạng nhì</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Giá vé:</label>
+                <select class="form-control" name="nameprice">
+                    {% for p in price_list %}
+                    <option id="price" value="{{p.vnd}}">{{p.vnd}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row-group">
+            <div class="submit-form">
+                <input onclick="addToCart({{f.id}})" class="sub" value="Lưu lại" readonly>
+            </div>
+            <div class="submit-form">
+                <button class="sub">Tạo mới</button>
+            </div>
+
+        </div>
+        <br>
+        <br>
+        <div class="submit-form">
+            <center><a href="{{url_for('payment')}}" class="sub" type="submit">Thanh toán</a></center>
+        </div>
         {% endif %}
-     </form>
-    </div>
-</body>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </form>
+</div>
+{% endblock %}
