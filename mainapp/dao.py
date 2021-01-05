@@ -2,6 +2,8 @@ from datetime import date, timedelta
 
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
+from sqlalchemy import func
+
 from mainapp.models import *
 from flask import render_template, redirect, request, jsonify, session
 import hashlib
@@ -9,58 +11,63 @@ import json
 import uuid
 import hmac
 from urllib.request import urlopen, Request
-#region payMomo
+
+
+# region payMomo
 def payByMomo(Amount):
-	endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
-	partnerCode = "MOMOS5MZ20201231"
-	accessKey = "8B7pbIkKMSp9XKB5"
-	serectkey = "AWV3hM9STH982MdyHyQ9OfRodyx9mTH8"
-	orderInfo = "Thanh toán vé máy bay "
-	returnUrl = "https://momo.vn/return"
-	notifyurl = "https://dummy.url/notify"
-	amount = Amount
-	orderId = str(uuid.uuid4())
-	requestId = str(uuid.uuid4())
-	requestType = "captureMoMoWallet"
-	extraData = "merchantName=;merchantId=" #pass empty value if your merchant does not have stores else merchantName=[storeName]; merchantId=[storeId] to identify a transaction map with a physical store
+    endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
+    partnerCode = "MOMOSHFW20201230"
+    accessKey = "ctUbIAI7QbxjF6c6"
+    serectkey = b'P8TTw7iuWQMwXKrvxFm8dco0uZvsJMkc'
+    orderInfo = "Thanh toán vé máy bay "
+    returnUrl = "https://momo.vn/return"
+    notifyurl = "https://dummy.url/notify"
+    amount = Amount
+    orderId = str(uuid.uuid4())
+    requestId = str(uuid.uuid4())
+    requestType = "captureMoMoWallet"
+    extraData = "merchantName=;merchantId="  # pass empty value if your merchant does not have stores else merchantName=[storeName]; merchantId=[storeId] to identify a transaction map with a physical store
 
-	#before sign HMAC SHA256 with format
-	#partnerCode=$partnerCode&accessKey=$accessKey&requestId=$requestId&amount=$amount&orderId=$oderId&orderInfo=$orderInfo&returnUrl=$returnUrl&notifyUrl=$notifyUrl&extraData=$extraData
-	rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData
-	#
-	# #puts raw signature
-	# print("--------------------RAW SIGNATURE----------------")
-	print(rawSignature)
-	#signature
-	h = hmac.new( bytes(serectkey , 'utf-8'), rawSignature.encode('utf8'), hashlib.sha256 )
-	signature = h.hexdigest()
-	print("--------------------SIGNATURE----------------")
-	print(signature)
+    # before sign HMAC SHA256 with format
+    # partnerCode=$partnerCode&accessKey=$accessKey&requestId=$requestId&amount=$amount&orderId=$oderId&orderInfo=$orderInfo&returnUrl=$returnUrl&notifyUrl=$notifyUrl&extraData=$extraData
+    rawSignature = "partnerCode=" + partnerCode + "&accessKey=" + accessKey + "&requestId=" + requestId + "&amount=" + amount + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&returnUrl=" + returnUrl + "&notifyUrl=" + notifyurl + "&extraData=" + extraData
+    #
+    # #puts raw signature
+    # print("--------------------RAW SIGNATURE----------------")
+    print(rawSignature)
+    # signature
+    h = hmac.new(serectkey, rawSignature.encode('utf8'), hashlib.sha256)
+    signature = h.hexdigest()
+    print("--------------------SIGNATURE----------------")
+    print(signature)
 
-	#json object send to MoMo endpoint
+    # json object send to MoMo endpoint
 
-	data = {
-			'partnerCode' : partnerCode,
-			'accessKey' : accessKey,
-			'requestId' : requestId,
-			'amount' : amount,
-			'orderId' : orderId,
-			'orderInfo' : orderInfo,
-			'returnUrl' : returnUrl,
-			'notifyUrl' : notifyurl,
-			'extraData' : extraData,
-			'requestType' : requestType,
-			'signature' : signature
-	}
+    data = {
+        'partnerCode': partnerCode,
+        'accessKey': accessKey,
+        'requestId': requestId,
+        'amount': amount,
+        'orderId': orderId,
+        'orderInfo': orderInfo,
+        'returnUrl': returnUrl,
+        'notifyUrl': notifyurl,
+        'extraData': extraData,
+        'requestType': requestType,
+        'signature': signature
+    }
 
-	data = json.dumps(data).encode('utf-8')
-	clen =len(data)
-	req = Request(endpoint , data , {'Content-Type': 'application/json', 'Content-Length' :clen})
-	f = urlopen(req)
-	response = f.read()
-	f.close()
-	return json.loads(response)['payUrl']
-#endregion
+    data = json.dumps(data).encode('utf-8')
+    clen = len(data)
+    req = Request(endpoint, data, {'Content-Type': 'application/json', 'Content-Length': clen})
+    f = urlopen(req)
+    response = f.read()
+    f.close()
+    print(json.loads(response)['payUrl'])
+    return json.loads(response)['payUrl']
+
+
+# endregion
 
 
 def query(id):
@@ -72,10 +79,12 @@ def query(id):
         return "SELECT * FROM Bill"
     elif (id == "4"):
         return "SELECT * FROM Bill"
+
+
 def get_data_label(query):
     labels = []
     data = []
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             sql = query
@@ -88,27 +97,32 @@ def get_data_label(query):
         connection.close()
     return labels, data
 
+
 class MyBarGraphYears(BaseChart):
     type = ChartType.Bar
+
     class labels:
         group = get_data_label(query("1")).__getitem__(0)
+
     class data:
         # label = labels
         data = get_data_label(query("1")).__getitem__(1)
         # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
         borderColor = Color.Cyan
         backgroundColor = Color.Green
+
     class options:
         title = {"text": "DOANH THU QUA CÁC NĂM ", "display": True}
         scales = {
             "yAxes": [
                 {
-                 "ticks": {
-                     "beginAtZero": True,
-                 }
-                 }
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
             ]
         }
+
 
 class MyBarGraphMonthly(BaseChart):
     type = ChartType.Bar
@@ -134,6 +148,8 @@ class MyBarGraphMonthly(BaseChart):
                 }
             ]
         }
+
+
 def draw_chart(type):
     if (type == "1"):
         NewChart = MyBarGraphYears()
@@ -146,8 +162,9 @@ def draw_chart(type):
     ChartJSON = NewChart.get()
     return ChartJSON
 
+
 def read_data(query):
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -155,8 +172,10 @@ def read_data(query):
     finally:
         connection.close()
     return x
+
+
 def read_data_para(query, val):
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -164,8 +183,10 @@ def read_data_para(query, val):
     finally:
         connection.close()
     return x
+
+
 def add_data(query, val):
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -175,8 +196,9 @@ def add_data(query, val):
     finally:
         connection.close()
     return 1
-def validate_employee(username, password):
 
+
+def validate_employee(username, password):
     query = "SELECT * FROM user"
     users = read_data(query)
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -188,8 +210,8 @@ def validate_employee(username, password):
 
     return None
 
-def add_employee(name, username, password, phone, email):
 
+def add_employee(name, username, password, phone, email):
     query = "SELECT * FROM user"
     users = read_data(query)
 
@@ -205,12 +227,12 @@ def add_employee(name, username, password, phone, email):
     sign = add_data(query_add, val)
 
     if sign == 1:
-        return(name,username,password,phone,email)
+        return (name, username, password, phone, email)
 
     return None
 
-def get_id(query, val):
 
+def get_id(query, val):
     data = 0
 
     connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
@@ -225,11 +247,11 @@ def get_id(query, val):
         connection.close()
     return data
 
-def get_data_list_1(query):
 
+def get_data_list_1(query):
     data = []
 
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -240,6 +262,7 @@ def get_data_list_1(query):
         connection.close()
 
     return data
+
 
 def get_data_search(air_from, air_to, dte_from):
     query_id_air1 = 'SELECT id FROM airport WHERE name = %s'
@@ -257,6 +280,7 @@ def get_data_search(air_from, air_to, dte_from):
 
     return list_flight
 
+
 def get_data_search_date(dte_from):
     query = 'CALL proc_search_flight_date(%s)'
     val = (dte_from)
@@ -264,6 +288,7 @@ def get_data_search_date(dte_from):
     list_flight = read_data_para(query, val)
 
     return list_flight
+
 
 def get_name(id):
     name_air = []
@@ -278,13 +303,15 @@ def get_name(id):
 
     return name_air
 
+
 def all_flight():
     list_flight = []
 
     l1 = Flight.query.join(FlightRoute). \
-        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name, Flight.date_flight_to, FlightRoute.id_airport1,
+        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name,
+                    Flight.date_flight_to, FlightRoute.id_airport1,
                     FlightRoute.id_airport2, Flight.plane_id). \
-                    filter(Flight.flight_route_id == FlightRoute.id).all()
+        filter(Flight.flight_route_id == FlightRoute.id).all()
 
     l2 = Flight.query.join(Plane). \
         add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
@@ -296,7 +323,9 @@ def all_flight():
                 if num.id == i.id:
                     name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
                     name2 = Airport.query.add_columns(Airport.name).filter(i.id_airport2 == Airport.id).one()
-                    booked = Booking.query.filter(i.id == Booking.flight_id).count()
+                    booked = db.session.query(func.sum(Booking.amount_seat)).filter(i.id == Booking.flight_id).scalar()
+                    if booked == None:
+                        booked = 0
             dic = {
                 'id': i.id,
                 'name': i.name,
@@ -332,7 +361,7 @@ def add_client(name, phone, idcard):
     sign = add_data(query_add, val)
 
     if sign == 1:
-        return(val)
+        return (val)
 
     return None
 
@@ -371,8 +400,10 @@ def add_total(cart, client):
     card = []
     for p in list(cart.values()):
         flag = 0
-        price_flight_id = PriceFlight.query.add_columns(PriceFlight.id).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
-        price_flight_name = PriceFlight.query.add_columns(PriceFlight.name).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
+        price_flight_id = PriceFlight.query.add_columns(PriceFlight.id).filter(
+            PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
+        price_flight_name = PriceFlight.query.add_columns(PriceFlight.name).filter(
+            PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
 
         if '1' in price_flight_name[1]:
             for c in list(client.values()):
@@ -427,6 +458,7 @@ def add_ticket(pf_id, ty_id, f_id, client_id, user_id):
 
     return None
 
+
 def add_booking(amount_seat, client_id, flight_id):
     query = "SELECT * FROM booking"
     bookings = read_data(query)
@@ -444,6 +476,8 @@ def add_booking(amount_seat, client_id, flight_id):
         return (val)
 
     return None
+
+
 def add_bill(money, client_id, user_id):
     query = "SELECT * FROM bill"
     bills = read_data(query)
@@ -461,3 +495,8 @@ def add_bill(money, client_id, user_id):
         return val
 
     return None
+
+def revenue_month():
+    pass
+def revenue_year():
+    pass

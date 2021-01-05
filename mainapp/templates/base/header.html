@@ -15,11 +15,12 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown notifications-menu">
                 <!-- User Account -->
+                {% if 'user' in session and session['user'] %}
                 <li class="dropdown user-menu">
                     <button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                         <img src="{{ url_for('static' , filename = 'assets/img/user/user.png')}}" class="user-image"
                              alt="User Image"/>
-                        <span class="d-none d-lg-inline-block">Tan 2k</span>
+                        <span class="d-none d-lg-inline-block">{{session['user'][4]}} </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <!-- User image -->
@@ -27,7 +28,7 @@
                             <img src="{{ url_for('static' , filename = 'assets/img/user/user.png')}}" class="img-circle"
                                  alt="User Image"/>
                             <div class="d-inline-block">
-                                Tan 2k <small class="pt-1">tan2k@gmail.com</small>
+                                {{session['user'][4]}} <small class="pt-1">{{session['user'][2]}}</small>
                             </div>
                         </li>
                         <li>
@@ -36,8 +37,9 @@
                             </a>
                         </li>
                         <li class="dropdown-footer">
-                            <a href="/logout"> <i class="mdi mdi-logout"></i> Log Out </a>
+                            <a href="{{url_for('logout')}}"> <i class="mdi mdi-logout"></i> Log Out </a>
                         </li>
+                        {% endif %}
                     </ul>
                 </li>
             </ul>

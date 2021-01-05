@@ -1,0 +1,150 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Doanh Thu Thang</title>
+    <link href="../static/css/DoanhThuThang.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="forms">
+        <form class="form">
+            <center><h1>BÁO CÁO DOANH THU THÁNG</h1></center>
+            <div class="row-group">
+                 <div class="form-group">
+                  <label>Tháng:</label>
+                  <select class="form-control" >
+                      <option>1</option>
+                       <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option>12</option>
+                  </select>
+                 </div>
+                <div class="form-group">
+                  <label>Năm:</label>
+                  <select class="form-control" >
+                      <option>2020</option>
+                       <option>2021</option>
+                      <option>2022</option>
+                      <option>2023</option>
+                      <option>2024</option>
+
+                  </select>
+                 </div>
+
+            </div>
+            <div class ="topic-table" >
+                <centr><b>Doanh số theo tháng</b></centr>
+            </div>
+            <div class="row">
+            <center><table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
+
+                        <thead>
+                            <tr>
+                                <th class = "col">STT</th>
+                                <th class = "col">Chuyến Bay</th>
+                                <th class = "col">Số Vé</th>
+                                <th class = "col">Tỉ Lệ</th>
+                                <th class = "col">Doanh Thu (VNĐ)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class = "col">1</td>
+                                <td class = "col">HN-HCM</td>
+                                <td class = "col">40</td>
+                                <td class = "col"> 99%</td>
+                                <td class = "col"> 200000000 </td>
+                            </tr>
+                            <tr>
+                                <td class = "col">2</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">3</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">4</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">5</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">6</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">7</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">8</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">9</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+                        <tr>
+                                <td class = "col">10</td>
+                                <td class = "col">ĐN-HCM</td>
+                                <td class = "col">100</td>
+                                <td class = "col"> 100%</td>
+                                <td class = "col"> 250000000 </td>
+                            </tr>
+
+                        </tbody>
+            </table>
+                </center>
+                </div>
+             <div class="row-group">
+                <div class="submit-form">
+                    <input class="sub" type = "Savesubmit"  value ="LƯU FILE">
+                </div>
+                <div class="submit-form">
+                    <input class="sub" type = "Findsubmit"  value ="TRA CỨU">
+                </div>
+         </div>
+        </form>
+    </div>
+</body>
+{% endblock %}
