@@ -2,6 +2,8 @@ from datetime import date, timedelta
 
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
+from sqlalchemy import func
+
 from mainapp.models import *
 from flask import render_template, redirect, request, jsonify, session
 import hashlib
@@ -9,7 +11,9 @@ import json
 import uuid
 import hmac
 from urllib.request import urlopen, Request
-#region payMomo
+
+
+# region payMomo
 def payByMomo(Amount):
 	endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
 	partnerCode = "MOMOGQOC20201207"
@@ -71,10 +75,12 @@ def query(id):
         return "SELECT * FROM Bill"
     elif (id == "4"):
         return "SELECT * FROM Bill"
+
+
 def get_data_label(query):
     labels = []
     data = []
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             sql = query
@@ -87,27 +93,32 @@ def get_data_label(query):
         connection.close()
     return labels, data
 
+
 class MyBarGraphYears(BaseChart):
     type = ChartType.Bar
+
     class labels:
         group = get_data_label(query("1")).__getitem__(0)
+
     class data:
         # label = labels
         data = get_data_label(query("1")).__getitem__(1)
         # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
         borderColor = Color.Cyan
         backgroundColor = Color.Green
+
     class options:
         title = {"text": "DOANH THU QUA CÁC NĂM ", "display": True}
         scales = {
             "yAxes": [
                 {
-                 "ticks": {
-                     "beginAtZero": True,
-                 }
-                 }
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
             ]
         }
+
 
 class MyBarGraphMonthly(BaseChart):
     type = ChartType.Bar
@@ -133,6 +144,8 @@ class MyBarGraphMonthly(BaseChart):
                 }
             ]
         }
+
+
 def draw_chart(type):
     if (type == "1"):
         NewChart = MyBarGraphYears()
@@ -145,8 +158,9 @@ def draw_chart(type):
     ChartJSON = NewChart.get()
     return ChartJSON
 
+
 def read_data(query):
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -154,8 +168,10 @@ def read_data(query):
     finally:
         connection.close()
     return x
+
+
 def read_data_para(query, val):
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -163,8 +179,10 @@ def read_data_para(query, val):
     finally:
         connection.close()
     return x
+
+
 def add_data(query, val):
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -174,8 +192,9 @@ def add_data(query, val):
     finally:
         connection.close()
     return 1
-def validate_employee(username, password):
 
+
+def validate_employee(username, password):
     query = "SELECT * FROM user"
     users = read_data(query)
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -187,8 +206,8 @@ def validate_employee(username, password):
 
     return None
 
-def add_employee(name, username, password, phone, email):
 
+def add_employee(name, username, password, phone, email):
     query = "SELECT * FROM user"
     users = read_data(query)
 
@@ -204,12 +223,12 @@ def add_employee(name, username, password, phone, email):
     sign = add_data(query_add, val)
 
     if sign == 1:
-        return(name,username,password,phone,email)
+        return (name, username, password, phone, email)
 
     return None
 
-def get_id(query, val):
 
+def get_id(query, val):
     data = 0
 
     connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
@@ -224,11 +243,11 @@ def get_id(query, val):
         connection.close()
     return data
 
-def get_data_list_1(query):
 
+def get_data_list_1(query):
     data = []
 
-    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
+    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -239,6 +258,7 @@ def get_data_list_1(query):
         connection.close()
 
     return data
+
 
 def get_data_search(air_from, air_to, dte_from):
     query_id_air1 = 'SELECT id FROM airport WHERE name = %s'
@@ -256,6 +276,7 @@ def get_data_search(air_from, air_to, dte_from):
 
     return list_flight
 
+
 def get_data_search_date(dte_from):
     query = 'CALL proc_search_flight_date(%s)'
     val = (dte_from)
@@ -263,6 +284,7 @@ def get_data_search_date(dte_from):
     list_flight = read_data_para(query, val)
 
     return list_flight
+
 
 def get_name(id):
     name_air = []
@@ -277,25 +299,32 @@ def get_name(id):
 
     return name_air
 
+
 def all_flight():
     list_flight = []
 
     l1 = Flight.query.join(FlightRoute). \
-        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name, Flight.date_flight_to, FlightRoute.id_airport1,
+        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name,
+                    Flight.date_flight_to, FlightRoute.id_airport1,
                     FlightRoute.id_airport2, Flight.plane_id). \
-                    filter(Flight.flight_route_id == FlightRoute.id).all()
+        filter(Flight.flight_route_id == FlightRoute.id).all()
 
     l2 = Flight.query.join(Plane). \
         add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
         filter(Flight.plane_id == Plane.id).all()
 
     for i in l1:
-        if i.date_flight_from >= date.today():
+        if i.date_flight_from > date.today():
             for num in l2:
                 if num.id == i.id:
                     name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
                     name2 = Airport.query.add_columns(Airport.name).filter(i.id_airport2 == Airport.id).one()
-                    booked = Booking.query.filter(i.id == Booking.flight_id).count()
+                    booked = db.session.query(func.sum(Booking.amount_seat)).filter(i.id == Booking.flight_id).scalar()
+                    if booked == None:
+                        booked = 0
+                    empty = num.quantity - booked
+                    if empty == 0:
+                        pass
             dic = {
                 'id': i.id,
                 'name': i.name,
@@ -331,7 +360,7 @@ def add_client(name, phone, idcard):
     sign = add_data(query_add, val)
 
     if sign == 1:
-        return(val)
+        return (val)
 
     return None
 
@@ -370,8 +399,10 @@ def add_total(cart, client):
     card = []
     for p in list(cart.values()):
         flag = 0
-        price_flight_id = PriceFlight.query.add_columns(PriceFlight.id).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
-        price_flight_name = PriceFlight.query.add_columns(PriceFlight.name).filter(PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
+        price_flight_id = PriceFlight.query.add_columns(PriceFlight.id).filter(
+            PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
+        price_flight_name = PriceFlight.query.add_columns(PriceFlight.name).filter(
+            PriceFlight.vnd == p['price'] and PriceFlight.flight_id == p['id']).first()
 
         if '1' in price_flight_name[1]:
             for c in list(client.values()):
@@ -426,6 +457,7 @@ def add_ticket(pf_id, ty_id, f_id, client_id, user_id):
 
     return None
 
+
 def add_booking(amount_seat, client_id, flight_id):
     query = "SELECT * FROM booking"
     bookings = read_data(query)
@@ -443,6 +475,8 @@ def add_booking(amount_seat, client_id, flight_id):
         return (val)
 
     return None
+
+
 def add_bill(money, client_id, user_id):
     query = "SELECT * FROM bill"
     bills = read_data(query)
@@ -460,3 +494,82 @@ def add_bill(money, client_id, user_id):
         return val
 
     return None
+
+
+
+def revenue_month(month, year):
+
+    list_flight = []
+
+    datefrom = year + '-' + month + '-' + '1'
+    dateto = year + '-' + month + '-' + '31'
+    print(datefrom, dateto)
+    l1 = Flight.query.join(FlightRoute). \
+        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name,
+                    Flight.date_flight_to, FlightRoute.id_airport1,
+                    FlightRoute.id_airport2, Flight.plane_id). \
+        filter(Flight.flight_route_id == FlightRoute.id).filter(Flight.date_flight_from.between(datefrom, dateto)).all()
+    print(l1)
+    l2 = Flight.query.join(Plane). \
+        add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
+        filter(Flight.plane_id == Plane.id).all()
+
+    for i in l1:
+        for num in l2:
+            if num.id == i.id:
+                booked = db.session.query(func.sum(Booking.amount_seat)).filter(
+                    i.id == Booking.flight_id).scalar()
+                if booked == None:
+                    booked = 0
+        dic = {
+            'id': i.id,
+            'name': i.name,
+            'date_from': i.date_flight_from,
+            'time_begin': i.time_begin,
+            'date_end': i.date_flight_to,
+            'time_end': i.time_end,
+            'seat1': num.amount_of_seat1,
+            'seat2': num.amount_of_seat2,
+            'quantity': num.quantity,
+            'empty': num.quantity - booked,
+            'rate': round(booked*100/num.quantity, 2),
+            'booked': booked,
+        }
+
+        list_flight.append(dic)
+    #print(list_flight)
+    return list_flight
+
+
+def revenue_year(year):
+    list_month = []
+    for i in range(1, 13):
+        month = str(i)
+        list_flight = revenue_month(month, year)
+        amount_flight = 0
+        revenue = 0
+        quantity = 0
+        booked = 0
+        for p in list_flight:
+            amount_flight = amount_flight + 1
+            revenue = revenue + p['booked']*50000
+            quantity = quantity + p['quantity']
+            booked = booked + p['booked']
+        if quantity == 0:
+            dic = {
+                'id': 0,
+                'amount_flight': 0,
+                'revenue': 0,
+                'rate': 0
+            }
+        else:
+            dic = {
+                'id': i,
+                'amount_flight': amount_flight,
+                'revenue': revenue,
+                'rate': round(booked*100/quantity, 2)
+            }
+        list_month.append(dic)
+    print(list_month)
+    return list_month
+

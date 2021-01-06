@@ -68,32 +68,70 @@ def search(): #search chuyen bay
 
     airport = dao.get_data_list_1(query)
 
+    list_flight = []
+
     if request.method == 'POST':
         air_from = request.form.get('from')
         air_to = request.form.get('to')
         dte_from = request.form.get('dtefrom')
+        name1 = Airport.query.add_columns(Airport.id).filter(Airport.name == air_from).all()
+        name2 = Airport.query.add_columns(Airport.id).filter(Airport.name == air_to).all()
 
+        l1 = Flight.query.join(FlightRoute). \
+            add_columns(Flight.id, Flight.plane_id, Flight.date_flight_from). \
+            filter(Flight.flight_route_id == FlightRoute.id and FlightRoute.id_airport1 == name1[1] and FlightRoute.id_airport2 == name2[1]).all()
+
+        l2 = Flight.query.join(Plane). \
+            add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
+            filter(Flight.plane_id == Plane.id).all()
         if dte_from:
-            list_flight = get_data_search(air_from, air_to, dte_from)
+            for i in l1:
+                if str(i.date_flight_from) == dte_from:
+                    for num in l2:
+                        if num.id == i.id:
+                            booked = Booking.query.filter(i.id == Booking.flight_id).count()
+                            if booked == None:
+                                booked = 0
+
+                            dic = {
+                                'empty': num.quantity - booked,
+                                'booked': booked,
+                            }
+
+                    list_flight.append(dic)
+
             data = {
                 'from': air_from,
                 'to': air_to,
                 'date': dte_from,
             }
-            return render_template('search.html', airport=airport, data=data, list_flight=list_flight, len=len(list_flight))
+            return render_template('search.html', airport=airport, data=data, list_flight=list_flight)
         else:
             dte_from = date.today()
-            list_flight = get_data_search(air_from, air_to, dte_from)
+            for i in l1:
+                if i.date_flight_from == dte_from:
+                    for num in l2:
+                        if num.id == i.id:
+                            booked = db.session.query(func.sum(Booking.amount_seat)).filter(i.id == Booking.flight_id).scalar()
+                            if booked == None:
+                                booked = 0
+                            dic = {
+                                'empty': num.quantity - booked,
+                                'booked': booked,
+                            }
+
+                    list_flight.append(dic)
             data = {
                 'from': air_from,
                 'to': air_to,
                 'date': dte_from,
             }
-            return render_template('search.html', airport=airport, data=data, list_flight=list_flight, len=len(list_flight))
+            return render_template('search.html', airport=airport, data=data, list_flight=list_flight)
 
     return render_template('search.html', airport=airport)
 
-@app.route('/api/detail',methods=["GET","POST"])
+
+@app.route('/api/detail',methods=["GET", "POST"])
 def add_flight():
 
     if 'detail' not in session:
@@ -326,7 +364,7 @@ def pay_by_momo():
             amount = 0
             for item in session.get('cart').values():
                 amount += item['quantity'] * item['price']
-            a = payByMomo(str(amount))
+            a = dao.payByMomo(amount)
             return redirect(a)
     except:
         return render_template("payment.html", err_msg=err_msg)
@@ -355,10 +393,14 @@ def pay():
         dao.add_total(cart, client)
         del session['cart']
         del session['client']
-        return jsonify({'message': 'successful'})
+        return jsonify({'message': 'Thanh toán thành công'})
 
-    return jsonify({'message': 'failed'})
+    return jsonify({'message': 'Thanh toán thất bại'})
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    return render_template('/profile.html')
 
 if __name__ == "__main__":
     from mainapp.admin_module import *

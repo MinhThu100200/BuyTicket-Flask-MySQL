@@ -1,0 +1,90 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Doanh Thu Thang</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/DoanhThuThang.css')}}" >
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="forms">
+        <form class="form" method="post">
+            <center><h1>BÁO CÁO DOANH THU THÁNG</h1></center>
+            <div class="row-group">
+                 <div class="form-group">
+                  <label>Tháng:</label>
+                  <select class="form-control" name="month" >
+                      <option value="1">1</option>
+                       <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                  </select>
+                 </div>
+                <div class="form-group">
+                  <label>Năm:</label>
+                  <select class="form-control" name="year" >
+                      <option value="2020">2020</option>
+                       <option value="2021">2021</option>
+
+                  </select>
+                 </div>
+
+            </div>
+            <div class ="topic-table" >
+                <centr><b>Doanh số theo tháng</b></centr>
+            </div>
+            <div class="row">
+            <center><table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
+
+                        <thead>
+                            <tr>
+                                <th class = "col">STT</th>
+                                <th class = "col">Chuyến Bay</th>
+                                <th class = "col">Số Vé</th>
+                                <th class = "col">Tỉ Lệ</th>
+                                <th class = "col">Doanh Thu (VNĐ)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if list_flight %}
+
+                            <tr>
+                                {% for p in list_flight %}
+                                <td class = "col">{{p.id}}</td>
+                                <td class = "col">{{p.name}}</td>
+                                <td class = "col">{{p.quantity}}</td>
+                                <td class = "col"> {{p.rate}}%</td>
+                                <td class = "col"> {{p.booked*50000}} </td>
+                                {% endfor %}
+                            </tr>
+
+                        {% endif %}
+
+                        </tbody>
+            </table>
+                </center>
+                </div>
+             <div class="row-group">
+                <div class="submit-form">
+                    <input class="sub" type = "Savesubmit"  value ="LƯU FILE">
+                </div>
+                <div class="submit-form">
+                    <input class="sub" type = "submit"  value ="TRA CỨU">
+                </div>
+         </div>
+        </form>
+    </div>
+</body>
+{% endblock %}

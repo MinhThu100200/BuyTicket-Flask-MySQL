@@ -1,0 +1,69 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Doanh Thu Nam</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/DoanhThuNam.css')}}" >
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="forms">
+        <form class="form" method="post">
+            <h1>BÁO CÁO DOANH THU NĂM</h1>
+             <div class="form-group">
+                  <label>Năm:</label>
+                  <select class="form-control" name="year">
+                      <option value="2020">2020</option>
+                       <option value="2021">2021</option>
+
+                  </select>
+             </div>
+
+                 <div class ="topic-table" >
+                <b>Doanh số theo tháng</b>
+                </div>
+            <div class="row">
+            <table class="col-xs-7 table-bordered table-striped table-condensed table-fixed">
+
+                        <thead>
+                            <tr>
+                                <th class = "col">STT</th>
+                                <th class = "col">Tháng</th>
+                                <th class = "col">Số chuyến bay</th>
+                                <th class = "col">Doanh Thu (VNĐ)</th>
+                                <th class = "col">Tỉ Lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if list_month %}
+                            <tr>
+                                {%for p in list_month %}
+                                <td class = "col">{{p.id}}</td>
+                                <td class = "col">{{p.id}}</td>
+                                <td class = "col">{{p.amount_flight}}</td>
+                                <td class = "col">{{p.revenue}}</td>
+                                <td class = "col">{{p.rate}}%</td>
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+
+                        </tbody>
+            </table>
+            </div>
+            <div class="row-group">
+                <div class="submit-form">
+                    <input class="sub" type = "Savesubmit"  value ="LƯU FILE">
+                </div>
+                <div class="submit-form">
+                    <input class="sub" type = "submit"  value ="TRA CỨU">
+                </div>
+         </div>
+        </form>
+    </div>
+
+</body>
+{% endblock %}

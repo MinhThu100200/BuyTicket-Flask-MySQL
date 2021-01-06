@@ -101,6 +101,7 @@ class Flight(db.Model):
     bookings = relationship('Booking', backref='flight', lazy=True)
     price_flights = relationship('PriceFlight', backref='fligth', lazy=True)
 
+
 class PriceFlight(db.Model):
     __tablename__ = 'priceflight'
 
@@ -109,6 +110,7 @@ class PriceFlight(db.Model):
     vnd = Column(Integer, default=0)
     flight_id = Column(Integer, ForeignKey(Flight.id), nullable=False)
     tickets = relationship('Ticket', backref='priceflight', lazy=True)
+
 
 
 
@@ -158,5 +160,9 @@ class Bill(db.Model):
     client_id = Column(Integer, ForeignKey(Client.id), nullable=False)
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
 
+'''class Rule3(db.Model):
+    __tablename__ = 'rule3'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)'''
 if __name__ == '__main__':
     db.create_all()
