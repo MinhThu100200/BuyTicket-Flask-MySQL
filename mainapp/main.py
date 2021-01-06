@@ -156,12 +156,6 @@ def add_flight():
 def customer(): #tat ca chuyen bay ngay hom nay
     return render_template('employee/customer.html')
 
-@app.route('/profile',methods=["GET","POST"])
-def profile(): #tat ca chuyen bay ngay hom nay
-    return render_template('employee/user-profile.html')
-
-
-
 @app.route('/manage-flight',methods=["GET","POST"])
 @login_required
 def flight(): #tat ca chuyen bay ngay hom nay
@@ -364,7 +358,7 @@ def pay_by_momo():
             amount = 0
             for item in session.get('cart').values():
                 amount += item['quantity'] * item['price']
-            a = dao.payByMomo(amount)
+            a = dao.payByMomo(str(amount))
             return redirect(a)
     except:
         return render_template("payment.html", err_msg=err_msg)
@@ -396,6 +390,21 @@ def pay():
         return jsonify({'message': 'Thanh toán thành công'})
 
     return jsonify({'message': 'Thanh toán thất bại'})
+
+@app.route('/api/paymomo', methods=['POST'])
+def pay_momo():
+    err_msg = 'Thanh toán thất bại'
+    if 'cart' in session and session['cart']:
+        cart = session['cart']
+        client = session['client']
+        dao.add_total(cart, client)
+        del session['cart']
+        del session['client']
+        err_msg = 'Thanh toán thành công'
+    return render_template("payment.html", err_msg=err_msg)
+
+
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required

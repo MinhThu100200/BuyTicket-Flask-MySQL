@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+import flask
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
 from sqlalchemy import func
@@ -12,6 +13,7 @@ import uuid
 import hmac
 from urllib.request import urlopen, Request
 
+domain = "http://127.0.0.1:8989/"
 
 # region payMomo
 def payByMomo(Amount):
@@ -20,7 +22,7 @@ def payByMomo(Amount):
 	accessKey = "tb0AnQrtECJ3H0Zu"
 	serectkey = "2l9NSfk8rWqc4CpYGZva7dBfCYo9xM25"
 	orderInfo = "Thanh toán vé máy bay "
-	returnUrl = "http://127.0.0.1:8989/pay"
+	returnUrl = domain + "api/paymomo"
 	notifyurl = "https://dummy.url/notify"
 	amount = Amount
 	orderId = str(uuid.uuid4())
@@ -30,18 +32,8 @@ def payByMomo(Amount):
 	#before sign HMAC SHA256 with format
 	#partnerCode=$partnerCode&accessKey=$accessKey&requestId=$requestId&amount=$amount&orderId=$oderId&orderInfo=$orderInfo&returnUrl=$returnUrl&notifyUrl=$notifyUrl&extraData=$extraData
 	rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData
-	#
-	# #puts raw signature
-	# print("--------------------RAW SIGNATURE----------------")
-	print(rawSignature)
-	#signature
 	h = hmac.new( bytes(serectkey , 'utf-8'), rawSignature.encode('utf8'), hashlib.sha256 )
 	signature = h.hexdigest()
-	print("--------------------SIGNATURE----------------")
-	print(signature)
-
-	#json object send to MoMo endpoint
-
 	data = {
 			'partnerCode' : partnerCode,
 			'accessKey' : accessKey,
@@ -55,7 +47,6 @@ def payByMomo(Amount):
 			'requestType' : requestType,
 			'signature' : signature
 	}
-
 	data = json.dumps(data).encode('utf-8')
 	clen =len(data)
 	req = Request(endpoint , data , {'Content-Type': 'application/json', 'Content-Length' :clen})
@@ -80,7 +71,7 @@ def query(id):
 def get_data_label(query):
     labels = []
     data = []
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             sql = query
@@ -160,7 +151,7 @@ def draw_chart(type):
 
 
 def read_data(query):
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -171,7 +162,7 @@ def read_data(query):
 
 
 def read_data_para(query, val):
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -182,7 +173,7 @@ def read_data_para(query, val):
 
 
 def add_data(query, val):
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, val)
@@ -247,7 +238,7 @@ def get_id(query, val):
 def get_data_list_1(query):
     data = []
 
-    connection = pymysql.connect('localhost', 'root', '12345678', 'saledb')
+    connection = pymysql.connect('localhost', 'root', 'tan240600', 'saledb')
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
@@ -325,22 +316,21 @@ def all_flight():
                     empty = num.quantity - booked
                     if empty == 0:
                         pass
-            dic = {
-                'id': i.id,
-                'name': i.name,
-                'name1': name1,
-                'name2': name2,
-                'flight_name': i.name,
-                'date_from': i.date_flight_from,
-                'time_begin': i.time_begin,
-                'date_end': i.date_flight_to,
-                'time_end': i.time_end,
-                'seat1': num.amount_of_seat1,
-                'seat2': num.amount_of_seat2,
-                'empty': num.quantity - booked,
-                'booked': booked,
-            }
-
+                    dic = {
+                        'id': i.id,
+                        'name': i.name,
+                        'name1': name1,
+                        'name2': name2,
+                        'flight_name': i.name,
+                        'date_from': i.date_flight_from,
+                        'time_begin': i.time_begin,
+                        'date_end': i.date_flight_to,
+                        'time_end': i.time_end,
+                        'seat1': num.amount_of_seat1,
+                        'seat2': num.amount_of_seat2,
+                        'empty': num.quantity - booked,
+                        'booked': booked,
+                    }
             list_flight.append(dic)
 
     return (list_flight)
@@ -573,3 +563,14 @@ def revenue_year(year):
     print(list_month)
     return list_month
 
+# def get_quantity_ticket_flight(f_id , type):
+#     sum = Flight.query.join(Plane). \
+#         add_columns(Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
+#         filter(Flight.plane_id == Plane.id and Flight.id == f_id).first()
+#     data = Ticket.query.filter(Ticket.flight_id == f_id ).filter(Ticket.type_ticket_id == type).count()
+#     if(type == 1):
+#         data = sum[2] - data
+#     else:
+#         data = sum[1] - data
+#     return data
+#

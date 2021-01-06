@@ -9,6 +9,11 @@
     <form class="form" method="post">
         <h1>VÉ CHUYẾN BAY</h1>
         {% if 'detail' in session and session['detail'] %}
+        {% if err_msg %}
+				<div class="alert alert-danger">
+					{{ err_msg }}
+				</div>
+		{% endif %}
         <div class="form-group">
             <label>Mã chuyến bay:</label>
             <input type="text" class="form-control" name="ID" value="{{f.id}}">
@@ -78,12 +83,11 @@
 
         <div class="row-group">
             <div class="submit-form">
-                <input onclick="addToCart({{f.id}})" class="sub" value="Lưu lại" readonly>
+                 <input onclick="addToCart({{f.id}})" class="sub" value="Lưu lại" readonly>
             </div>
             <div class="submit-form">
                 <button class="sub">Tạo mới</button>
             </div>
-
         </div>
         <br>
         <div class="submit-form">

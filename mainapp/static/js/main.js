@@ -33,7 +33,6 @@ function addToCart(id){
             console.log(data);
             alert(data.message);
         });
-
 }
 function pay(){
     if (confirm("Bạn chắc chắn thanh toán chưa?") == true)

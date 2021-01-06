@@ -43,18 +43,16 @@
     <!--    <input type="button" onclick="pay()" value="Thanh toán" class="btn btn-danger"/>-->
     <div style="text-align:center;">
         <div class="control-group">
-            <input type="radio" id="after" name="type" value="after" checked="true" style="display: inline;">
-            <label for="after" style="display: inline-block;">Thanh toán tiền mặt </label><br>
             <img style="max-width:60px ; height: 60px;"
-                 src="{{ url_for('static' , filename = 'img/payByMoney.jpg')}}" alt=""/>
+                 src="{{ url_for('static' , filename = 'img/payByMoney.png')}}" alt=""/>
         </div>
-
+        <input type="button" onclick="pay()" value="Thanh toán trực tiếp" class="btn btn-danger"/>
         <div class="control-group">
             <img style="max-width:60px ; height: 60px; margin-top:30px;"
                  src="{{ url_for('static' , filename = 'img/momo.jpg')}}"
                  alt=""/>
         </div>
-        <form class="form-horizontal loginFrm" action="/payMoMo" method="post">
+        <form class="form-horizontal loginFrm" action="/payMoMo" method="POST">
             <button type="submit" class="btn btn-primary">Thanh toán qua ví momo</button>
         </form>
     </div>
