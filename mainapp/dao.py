@@ -22,7 +22,7 @@ def payByMomo(Amount):
     accessKey = "tb0AnQrtECJ3H0Zu"
     serectkey = "2l9NSfk8rWqc4CpYGZva7dBfCYo9xM25"
     orderInfo = "Thanh toán vé máy bay "
-    returnUrl = domain + "api/pay"
+    returnUrl = domain + "api/paymomo"
     notifyurl = "https://dummy.url/notify"
     amount = Amount
     orderId = str(uuid.uuid4())
@@ -544,8 +544,10 @@ def add_total(cart, client):
                     ticket = add_ticket(price_flight_id[1], 2, p['id'], c['id'], user[0])
                     print(ticket)
         for c in list(client.values()):
+            print(p['quantity'], c['id'], p['id'])
             booking = add_booking(p['quantity'], c['id'], p['id'])
             print(booking)
+            print(p['quantity'], c['id'], p['id'])
             bill = add_bill(total_amount, c['id'], user[0])
             print(bill)
             break
@@ -575,7 +577,7 @@ def add_booking(amount_seat, client_id, flight_id):
     query = "SELECT * FROM booking"
     bookings = read_data(query)
 
-    id = len(bookings) + 1
+    id = len(bookings) + 2
     amount_seat = int(amount_seat)
     datetime_booking = date.today()
     client_id = int(client_id)

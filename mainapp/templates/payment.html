@@ -42,22 +42,19 @@
         {% endif %}
     </table>
     <!--    <input type="button" onclick="pay()" value="Thanh toán" class="btn btn-danger"/>-->
-    <form class="form-horizontal loginFrm" action="/payMoMo" style="text-align:center;" method="post">
+         <div style="text-align:center;">
         <div class="control-group">
-            <input type="radio" id="after" name="type" value="after" checked="true" style="display: inline;">
-            <label for="after" style="display: inline-block;">Thanh toán tiền mặt </label><br>
-            <img style="max-width:60px ; height: 60px;"
-                 src="{{ url_for('static' , filename = 'img/payByMoney.jpg')}}" alt=""/>
+            <input type="button" onclick="pay()" value="Thanh toán trực tiếp" class="btn btn-danger"/>
+            <img style="max-width:60px ; height: 60px;" src="{{ url_for('static' , filename = 'img/payByMoney.jpg')}}" alt=""/>
         </div>
+        <br>
+        <div class="control-group">
+            <form class="form-horizontal loginFrm" action="/payMoMo" method="POST">
+                <button type="submit" class="btn btn-primary">Thanh toán qua ví momo</button>
 
-        <div class="control-group">
-            <input type="radio" id="momo" name="type" value="momo" style="display: inline;">
-            <label for="momo" style="display: inline-block">Ví điện tử Momo</label><br>
-            <img style="max-width:60px ; height: 60px;" src="{{ url_for('static' , filename = 'img/momo.jpg')}}"
-                 alt=""/>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg">Xác nhận</button>
-    </form>
+         </div>
 </div>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

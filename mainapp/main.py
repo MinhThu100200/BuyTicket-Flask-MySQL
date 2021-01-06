@@ -1,6 +1,10 @@
 import json
 from datetime import date
+
+import werkzeug
 from flask import render_template, redirect, session, request, jsonify, url_for
+from werkzeug.exceptions import HTTPException
+
 from mainapp import app, login, dao
 from flask_login import login_user
 import hashlib
@@ -320,6 +324,19 @@ def ticket():
     print(data)
     return jsonify('sus')
 
+@app.route('/api/paymomo', methods=['POST'])
+def pay_momo():
+    err_msg = 'Thanh toán thất bại'
+    if 'cart' in session and session['cart']:
+        cart = session['cart']
+        client = session['client']
+        dao.add_total(cart, client)
+        del session['cart']
+        del session['client']
+        err_msg = 'Thanh toán thành công'
+    return render_template("payment.html", err_msg=err_msg)
+
+
 @app.route('/pay')
 @login_required
 def payment():
@@ -385,6 +402,10 @@ def pay():
 @login_required
 def profile():
     return render_template('/profile.html')
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html')
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
