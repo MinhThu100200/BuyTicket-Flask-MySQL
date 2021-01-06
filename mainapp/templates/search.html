@@ -8,6 +8,11 @@
 <div class="forms">
     <form class="form" method="post">
         <h1>TRA CỨU CHUYẾN BAY</h1>
+        {% if err_msg %}
+				<div class="alert alert-danger">
+					{{ err_msg }}
+				</div>
+				{% endif %}
         <div class="form-group">
             <label>Sân bay đi:</label>
             <select class="form-control" name="from">
@@ -48,7 +53,7 @@
             <input class="sub" type="submit" value="TÌM">
 
         </div>
-        {% if data %}
+        {% if list_flight %}
         <div class="topic-table">
             <b>Danh sách chuyến bay</b>
         </div>
@@ -68,17 +73,20 @@
                     <tbody>
 
                     {% for x in list_flight %}
-                        {% for k,v in data.items() %}
-                        <tr onclick="DetaiFlight({{data}}, {{x[0]}}, {{x[1]}})">
-                        <td class="col">{{ v }}</td>
-                        {% endfor %}
+
+                        <tr>
+                        <td class="col"><a onclick="addToDetail({{x.id}})" href="{{ url_for('schedule') }}">{{ x.from }}</a>
+                        </td>
+                       <td class="col">{{ x.to }}</td>
+                            <td class="col">{{ x.date }}</td>
                         <td class="col">{{ x.empty }}</td>
                         <td class="col">{{ x.booked }}</td>
                     </tr>
                     {% endfor %}
-                    {% endif %}
+
                     </tbody>
                 </table>
+                {%endif%}
             </div>
         </div>
     </form>

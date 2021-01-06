@@ -1,3 +1,5 @@
+{% extends 'admin/master.html' %}
+{% block body %}
 <title xmlns="http://www.w3.org/1999/html">Report</title>
 <!-- import plugin script -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
@@ -14,9 +16,12 @@
     <br>
     <select name="typechart">
         <option value="1">Qua các năm</option>
-        <option value="2">Các tháng </option>
-        <option value="3">Qui 2</option>
-        <option value="4">Qui 3</option>
+        <option value="2">Qúy 1</option>
+        <option value="3">Qúy 2</option>
+        <option value="4">Qúy 3</option>
+        <option value="5">Qúy 4</option>
+        <option value="6">Các tháng trong năm</option>
+
     </select>
     <input type="submit" value="Show" class="btn btn-danger btn-lg"/>
 </form>
@@ -50,3 +55,4 @@
         }
     }
 </style>
+{% endblock %}

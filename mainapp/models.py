@@ -160,9 +160,12 @@ class Bill(db.Model):
     client_id = Column(Integer, ForeignKey(Client.id), nullable=False)
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
 
-'''class Rule3(db.Model):
+class Rule3(db.Model):
     __tablename__ = 'rule3'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)'''
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    amount = Column(Integer, nullable=False)
+
+
 if __name__ == '__main__':
     db.create_all()

@@ -8,6 +8,20 @@ from flask import redirect, url_for
 import pymysql
 from pychartjs import BaseChart, ChartType, Color
 
+class UpdateRule(BaseView):
+    @expose('/', methods=['get', 'post'])
+    def update(self):
+        err_msg = ""
+        if request.method == 'POST':
+            amount = request.form.get('amount')
+            sign = dao.update_rule3(amount)
+            if sign == None:
+                err_msg = "Điều chỉnh không thành công"
+                return self.render('/admin/rule3.html', err_msg=err_msg)
+        err_msg = "Điều chỉnh thành công"
+        return self.render('/admin/rule3.html', err_msg=err_msg)
+
+
 class RevenueMonth(BaseView):
     @expose('/', methods=['get', 'post'])
     def revenue_month(self):
@@ -203,7 +217,7 @@ admin.add_view(ModelView(PriceFlight, db.session))
 #admin.add_view(ModelView(Ticket, db.session))
 #admin.add_view(ModelView(TypeTicket, db.session))
 admin.add_view(AirportModelView(Airport, db.session))
-#admin.add_view(ModelView(Client, db.session))
+admin.add_view(UpdateRule(name='UpdateRule'))
 admin.add_view(ChartView(name="CHART"))
 admin.add_view(RevenueMonth(name='RevenueMonth'))
 admin.add_view(RevenueYear(name='RevenueYear'))

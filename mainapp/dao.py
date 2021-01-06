@@ -70,15 +70,17 @@ def payByMomo(Amount):
 
 def query(id):
     if (id == "1"):
-        return "Select Year(datetime_bill) as 'Nam', Sum(money) as 'Doanh thu' From saledb.bill Group by Year(datetime_bill)"
+        return " Select Year(datetime_bill) as 'Nam', Sum(money) as 'Doanh thu' From saledb.bill Group by Year(datetime_bill)  order by Year(datetime_bill) asc"
     elif (id == "2"):
-        return "SELECT DATE_FORMAT(datetime_bill, '%m-%Y') , SUM(money) AS DOANHTHU FROM saledb.bill GROUP BY DATE_FORMAT(datetime_bill, '%m-%Y') ORDER BY datetime_bill ASC"
+        return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>=1 and month(datetime_bill)<=3 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
     elif (id == "3"):
-        return "SELECT * FROM Bill"
+        return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>=4 and month(datetime_bill)<=6 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
     elif (id == "4"):
-        return "SELECT * FROM Bill"
-
-
+        return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>= 7 and month(datetime_bill)<=9 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
+    elif (id =="5"):
+        return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>=10 and month(datetime_bill)<=12 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
+    elif (id == "6"):
+        return "SELECT DATE_FORMAT(datetime_bill,'%m') as 'Tháng' , SUM(money) AS DOANHTHU FROM saledb.bill where month(datetime_bill)>=1 and month(datetime_bill)<=12 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%m') ORDER BY datetime_bill ASC"
 def get_data_label(query):
     labels = []
     data = []
@@ -97,7 +99,7 @@ def get_data_label(query):
 
 
 class MyBarGraphYears(BaseChart):
-    type = ChartType.Bar
+    type = ChartType.Line
 
     class labels:
         group = get_data_label(query("1")).__getitem__(0)
@@ -106,10 +108,11 @@ class MyBarGraphYears(BaseChart):
         # label = labels
         data = get_data_label(query("1")).__getitem__(1)
         # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
-        borderColor = Color.Cyan
-        backgroundColor = Color.Green
+        borderColor = Color.Magenta
+        backgroundColor = Color.Transparent
 
     class options:
+
         title = {"text": "DOANH THU QUA CÁC NĂM ", "display": True}
         scales = {
             "yAxes": [
@@ -122,8 +125,9 @@ class MyBarGraphYears(BaseChart):
         }
 
 
-class MyBarGraphMonthly(BaseChart):
-    type = ChartType.Bar
+
+class MyBarGraphQ1(BaseChart):
+    type = ChartType.Line
 
     class labels:
         group = get_data_label(query("2")).__getitem__(0)
@@ -132,11 +136,11 @@ class MyBarGraphMonthly(BaseChart):
         # label = labels
         data = get_data_label(query("2")).__getitem__(1)
         # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
-        borderColor = Color.Cyan
-        backgroundColor = Color.Green
+        borderColor = Color.Blue
+        backgroundColor = Color.Beige
 
     class options:
-        title = {"text": "DOANH THU QUA CÁC THÁNG", "display": True}
+        title = {"text": "DOANH THU THEO QUÝ 1", "display": True}
         scales = {
             "yAxes": [
                 {
@@ -147,16 +151,125 @@ class MyBarGraphMonthly(BaseChart):
             ]
         }
 
+class MyBarGraphQ2(BaseChart):
+    type = ChartType.Line
+
+    class labels:
+        group = get_data_label(query("3")).__getitem__(0)
+
+    class data:
+        # label = labels
+        data = get_data_label(query("3")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Blue
+        backgroundColor = Color.Beige
+
+
+    class options:
+        title = {"text": "DOANH THU THEO QUÝ 2", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
+            ]
+        }
+
+class MyBarGraphQ3(BaseChart):
+    type = ChartType.Line
+
+    class labels:
+        group = get_data_label(query("4")).__getitem__(0)
+
+    class data:
+        # label = labels
+        data = get_data_label(query("4")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Blue
+        backgroundColor = Color.Beige
+
+    class options:
+        title = {"text": "DOANH THU THEO QUÝ 3", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
+            ]
+        }
+class MyBarGraphQ4(BaseChart):
+    type = ChartType.Line
+
+    class labels:
+        group = get_data_label(query("5")).__getitem__(0)
+
+    class data:
+        # label = labels
+        data = get_data_label(query("5")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Blue
+        backgroundColor = Color.Beige
+
+
+    class options:
+        title = {"text": "DOANH THU THEO QUÝ 4", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
+            ]
+        }
+class MyBarGraphByMonths(BaseChart):
+    type = ChartType.Bar
+
+    class labels:
+        group = get_data_label(query("6")).__getitem__(0)
+
+    class data:
+        # label = labels
+        data = get_data_label(query("6")).__getitem__(1)
+        # backgroundColor = Color.Palette(Color.Hex('#5AC18E'), 12, 'lightness')
+        borderColor = Color.Blue
+        backgroundColor = Color.Beige
+
+    class options:
+        title = {"text": "DOANH THU THEO TỪNG THÁNG TRONG NĂM", "display": True}
+        scales = {
+            "yAxes": [
+                {
+                    "ticks": {
+                        "beginAtZero": True,
+                    }
+                }
+            ]
+        }
 
 def draw_chart(type):
     if (type == "1"):
         NewChart = MyBarGraphYears()
+        NewChart.data.label = "Doanh Thu"
     if (type == "2"):
-        NewChart = MyBarGraphMonthly()
+        NewChart = MyBarGraphQ1()
+        NewChart.data.label = "Doanh Thu"
     if (type == "3"):
-        NewChart = MyBarGraphMonthly()
+        NewChart = MyBarGraphQ2()
+        NewChart.data.label = "Doanh Thu"
     if (type == "4"):
-        NewChart = MyBarGraphMonthly()
+        NewChart = MyBarGraphQ3()
+        NewChart.data.label = "Doanh Thu"
+    if (type == "5"):
+        NewChart = MyBarGraphQ4()
+        NewChart.data.label = "Doanh Thu"
+    if(type == "6"):
+        NewChart = MyBarGraphByMonths()
+        NewChart.data.label = "Doanh Thu"
     ChartJSON = NewChart.get()
     return ChartJSON
 
@@ -314,9 +427,11 @@ def all_flight():
     l2 = Flight.query.join(Plane). \
         add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
         filter(Flight.plane_id == Plane.id).all()
-
+    d = Rule3.query.all()
+    for i in d:
+        amount = i.amount
     for i in l1:
-        if i.date_flight_from > date.today():
+        if i.date_flight_from >= date.today() + timedelta(amount):
             for num in l2:
                 if num.id == i.id:
                     name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
@@ -327,21 +442,21 @@ def all_flight():
                     empty = num.quantity - booked
                     if empty == 0:
                         pass
-            dic = {
-                'id': i.id,
-                'name': i.name,
-                'name1': name1,
-                'name2': name2,
-                'flight_name': i.name,
-                'date_from': i.date_flight_from,
-                'time_begin': i.time_begin,
-                'date_end': i.date_flight_to,
-                'time_end': i.time_end,
-                'seat1': num.amount_of_seat1,
-                'seat2': num.amount_of_seat2,
-                'empty': num.quantity - booked,
-                'booked': booked,
-            }
+                    dic = {
+                        'id': i.id,
+                        'name': i.name,
+                        'name1': name1,
+                        'name2': name2,
+                        'flight_name': i.name,
+                        'date_from': i.date_flight_from,
+                        'time_begin': i.time_begin,
+                        'date_end': i.date_flight_to,
+                        'time_end': i.time_end,
+                        'seat1': num.amount_of_seat1,
+                        'seat2': num.amount_of_seat2,
+                        'empty': num.quantity - booked,
+                        'booked': booked,
+                    }
 
             list_flight.append(dic)
 
@@ -574,4 +689,17 @@ def revenue_year(year):
         list_month.append(dic)
     print(list_month)
     return list_month
+
+def update_rule3(amount):
+
+    query = 'update rule3 set amount = %s where id = 1'
+    val = (amount)
+    sign = add_data(query, val)
+
+    if sign == 1:
+        return val
+
+    return None
+
+
 

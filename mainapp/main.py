@@ -16,6 +16,10 @@ def login_required(f):
     return check
 @app.route("/")
 def main():
+    f = Rule3.query.all()
+
+    for i in f:
+        print(i.amount)
     return render_template('index.html')
 
 @app.route("/login-admin", methods=['GET', 'POST'])
@@ -94,39 +98,20 @@ def search(): #search chuyen bay
                                 booked = 0
 
                             dic = {
+                                'id': i.id,
+                                'from': air_from,
+                                'to': air_to,
+                                'date': dte_from,
                                 'empty': num.quantity - booked,
                                 'booked': booked,
                             }
 
                     list_flight.append(dic)
-
-            data = {
-                'from': air_from,
-                'to': air_to,
-                'date': dte_from,
-            }
-            return render_template('search.html', airport=airport, data=data, list_flight=list_flight)
+            return render_template('search.html', airport=airport, list_flight=list_flight)
         else:
-            dte_from = date.today()
-            for i in l1:
-                if i.date_flight_from == dte_from:
-                    for num in l2:
-                        if num.id == i.id:
-                            booked = db.session.query(func.sum(Booking.amount_seat)).filter(i.id == Booking.flight_id).scalar()
-                            if booked == None:
-                                booked = 0
-                            dic = {
-                                'empty': num.quantity - booked,
-                                'booked': booked,
-                            }
+            err_msg="Không tìm thấy"
 
-                    list_flight.append(dic)
-            data = {
-                'from': air_from,
-                'to': air_to,
-                'date': dte_from,
-            }
-            return render_template('search.html', airport=airport, data=data, list_flight=list_flight)
+            return render_template('search.html', airport=airport, err_msg=err_msg)
 
     return render_template('search.html', airport=airport)
 

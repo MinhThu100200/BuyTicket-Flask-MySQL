@@ -1,0 +1,22 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div class="forms" >
+    <form class="form" method="post">
+        <h1>Điều chỉnh quy định hủy bán vé</h1>
+        {% if err_msg %}
+        <div class="alert alert-danger">
+            {{ err_msg }}
+        </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="nma">Khoảng cách ngày:</label>
+            <input type="text" class="form-control" name="amount" id="nma">
+        </div>
+
+        <div class="submit-form">
+            <input class="sub" type="submit" value="Điều chỉnh">
+        </div>
+    </form>
+</div>
+{% endblock %}
