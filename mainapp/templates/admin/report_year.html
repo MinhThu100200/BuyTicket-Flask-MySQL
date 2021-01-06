@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Doanh Thu Nam</title>
-    <link href="../static/css/DoanhThunam.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/DoanhThuNam.css')}}" >
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -12,16 +12,14 @@
 </head>
 <body>
     <div class="forms">
-        <form class="form">
+        <form class="form" method="post">
             <h1>BÁO CÁO DOANH THU NĂM</h1>
              <div class="form-group">
                   <label>Năm:</label>
-                  <select class="form-control" >
-                      <option>2020</option>
-                       <option>2021</option>
-                      <option>2022</option>
-                      <option>2023</option>
-                      <option>2024</option>
+                  <select class="form-control" name="year">
+                      <option value="2020">2020</option>
+                       <option value="2021">2021</option>
+
                   </select>
              </div>
 
@@ -41,55 +39,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                        {% if list_month %}
                             <tr>
-                                <td class = "col">1</td>
-                                <td class = "col">1</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 2000000000000</td>
-                                <td class = "col"> 98%</td>
+                                {%for p in list_month %}
+                                <td class = "col">{{p.id}}</td>
+                                <td class = "col">{{p.id}}</td>
+                                <td class = "col">{{p.amount_flight}}</td>
+                                <td class = "col">{{p.revenue}}</td>
+                                <td class = "col">{{p.rate}}%</td>
+                                {% endfor %}
                             </tr>
-                        <tr>
-                                <td class = "col">2</td>
-                                <td class = "col">2</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 2100000000000</td>
-                                <td class = "col"> 100% </td>
-                            </tr>
-                        <tr>
-                                <td class = "col">3</td>
-                                <td class = "col">3</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 300000000000</td>
-                                <td class = "col"> 100% </td>
-                            </tr>
-                        <tr>
-                                <td class = "col">4</td>
-                                <td class = "col">4</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 200000000000</td>
-                                <td class = "col"> 99% </td>
-                            </tr>
-                        <tr>
-                                <td class = "col">4</td>
-                                <td class = "col">4</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 200000000000</td>
-                                <td class = "col"> 99% </td>
-                            </tr>
-                        <tr>
-                                <td class = "col">4</td>
-                                <td class = "col">4</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 200000000000</td>
-                                <td class = "col"> 99% </td>
-                            </tr>
-                        <tr>
-                                <td class = "col">4</td>
-                                <td class = "col">4</td>
-                                <td class = "col">40</td>
-                                <td class = "col"> 200000000000</td>
-                                <td class = "col"> 99% </td>
-                            </tr>
+                        {% endif %}
+
                         </tbody>
             </table>
             </div>
@@ -98,7 +59,7 @@
                     <input class="sub" type = "Savesubmit"  value ="LƯU FILE">
                 </div>
                 <div class="submit-form">
-                    <input class="sub" type = "Findsubmit"  value ="TRA CỨU">
+                    <input class="sub" type = "submit"  value ="TRA CỨU">
                 </div>
          </div>
         </form>

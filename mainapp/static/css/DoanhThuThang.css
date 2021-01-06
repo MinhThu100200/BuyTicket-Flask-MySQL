@@ -1,22 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-*{
-    padding : 0;
-    margin : 0;
-    box-sizing: border-box;
-    outline : none;
-    font-family: 'Roboto', sans-serif;
-}
-body{
-
-
-   /* background :linear-gradient(90deg,#db91e0,white);*/
-    background-repeat : no-repeat ;
-    height : 100vh ;
-    background-size : cover;
-}
-
-.forms{
+forms{
     background:rgba(0,0,0,0.5);
     margin-left: 400px;
     margin-right : 400px;
@@ -27,7 +9,7 @@ body{
 .forms h1{
     text-align :center;
     font-size : 50px;
-    color : white ;
+    color : #131212 ;
     margin-bottom:30px;
 }
 .form{
@@ -64,7 +46,7 @@ body{
 .table-fixed{
     margin-left:14px;
     margin-top:0;
-    min-width : 634px;
+    min-width : 97.4%;
 
 }
 .table-fixed thead,
@@ -97,7 +79,7 @@ body{
     display : block;
     height :200px;
     overflow-y :auto;
-    color : #e5fc43;
+    color : #150e0e;
 }
 .table-fixed tr{
     display : block;

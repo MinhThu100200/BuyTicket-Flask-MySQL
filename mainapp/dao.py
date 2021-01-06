@@ -22,7 +22,7 @@ def payByMomo(Amount):
     orderInfo = "Thanh toán vé máy bay "
     returnUrl = "https://momo.vn/return"
     notifyurl = "https://dummy.url/notify"
-    amount = Amount
+    amount = str(Amount)
     orderId = str(uuid.uuid4())
     requestId = str(uuid.uuid4())
     requestType = "captureMoMoWallet"
@@ -56,14 +56,12 @@ def payByMomo(Amount):
         'requestType': requestType,
         'signature': signature
     }
-
     data = json.dumps(data).encode('utf-8')
     clen = len(data)
     req = Request(endpoint, data, {'Content-Type': 'application/json', 'Content-Length': clen})
     f = urlopen(req)
     response = f.read()
     f.close()
-    print(json.loads(response)['payUrl'])
     return json.loads(response)['payUrl']
 
 
@@ -318,7 +316,7 @@ def all_flight():
         filter(Flight.plane_id == Plane.id).all()
 
     for i in l1:
-        if i.date_flight_from >= date.today():
+        if i.date_flight_from > date.today():
             for num in l2:
                 if num.id == i.id:
                     name1 = Airport.query.add_columns(Airport.name).filter(i.id_airport1 == Airport.id).one()
@@ -326,6 +324,9 @@ def all_flight():
                     booked = db.session.query(func.sum(Booking.amount_seat)).filter(i.id == Booking.flight_id).scalar()
                     if booked == None:
                         booked = 0
+                    empty = num.quantity - booked
+                    if empty == 0:
+                        pass
             dic = {
                 'id': i.id,
                 'name': i.name,
@@ -496,7 +497,81 @@ def add_bill(money, client_id, user_id):
 
     return None
 
-def revenue_month():
-    pass
-def revenue_year():
-    pass
+
+
+def revenue_month(month, year):
+
+    list_flight = []
+
+    datefrom = year + '-' + month + '-' + '1'
+    dateto = year + '-' + month + '-' + '31'
+    print(datefrom, dateto)
+    l1 = Flight.query.join(FlightRoute). \
+        add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name,
+                    Flight.date_flight_to, FlightRoute.id_airport1,
+                    FlightRoute.id_airport2, Flight.plane_id). \
+        filter(Flight.flight_route_id == FlightRoute.id).filter(Flight.date_flight_from.between(datefrom, dateto)).all()
+    print(l1)
+    l2 = Flight.query.join(Plane). \
+        add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
+        filter(Flight.plane_id == Plane.id).all()
+
+    for i in l1:
+        for num in l2:
+            if num.id == i.id:
+                booked = db.session.query(func.sum(Booking.amount_seat)).filter(
+                    i.id == Booking.flight_id).scalar()
+                if booked == None:
+                    booked = 0
+        dic = {
+            'id': i.id,
+            'name': i.name,
+            'date_from': i.date_flight_from,
+            'time_begin': i.time_begin,
+            'date_end': i.date_flight_to,
+            'time_end': i.time_end,
+            'seat1': num.amount_of_seat1,
+            'seat2': num.amount_of_seat2,
+            'quantity': num.quantity,
+            'empty': num.quantity - booked,
+            'rate': round(booked*100/num.quantity, 2),
+            'booked': booked,
+        }
+
+        list_flight.append(dic)
+    #print(list_flight)
+    return list_flight
+
+
+def revenue_year(year):
+    list_month = []
+    for i in range(1, 13):
+        month = str(i)
+        list_flight = revenue_month(month, year)
+        amount_flight = 0
+        revenue = 0
+        quantity = 0
+        booked = 0
+        for p in list_flight:
+            amount_flight = amount_flight + 1
+            revenue = revenue + p['booked']*50000
+            quantity = quantity + p['quantity']
+            booked = booked + p['booked']
+        if quantity == 0:
+            dic = {
+                'id': 0,
+                'amount_flight': 0,
+                'revenue': 0,
+                'rate': 0
+            }
+        else:
+            dic = {
+                'id': i,
+                'amount_flight': amount_flight,
+                'revenue': revenue,
+                'rate': round(booked*100/quantity, 2)
+            }
+        list_month.append(dic)
+    print(list_month)
+    return list_month
+

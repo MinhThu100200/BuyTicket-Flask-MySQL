@@ -12,8 +12,13 @@ class RevenueMonth(BaseView):
     @expose('/', methods=['get', 'post'])
     def revenue_month(self):
         err_msg = ""
+        list_flight = []
         if request.method == 'POST':
-            return self.render('/admin/report_month.html', err_msg=err_msg)
+            month = request.form.get('month')
+            year = request.form.get('year')
+            list_flight = dao.revenue_month(month, year)
+            print(list_flight)
+            return self.render('/admin/report_month.html', err_msg=err_msg, list_flight=list_flight)
         return self.render('/admin/report_month.html', err_msg=err_msg)
 
     def is_accessible(self):
@@ -27,8 +32,12 @@ class RevenueYear(BaseView):
     @expose('/', methods=['get', 'post'])
     def revenue_month(self):
         err_msg = ""
+        list_month = []
         if request.method == 'POST':
-            return self.render('/admin/report_year.html', err_msg=err_msg)
+            year = request.form.get('year')
+            list_month = dao.revenue_year(year)
+            print(list_month)
+            return self.render('/admin/report_year.html', err_msg=err_msg, list_month=list_month)
         return self.render('/admin/report_year.html', err_msg=err_msg)
 
     def is_accessible(self):

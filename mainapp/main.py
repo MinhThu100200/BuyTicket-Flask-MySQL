@@ -92,6 +92,7 @@ def search(): #search chuyen bay
                             booked = Booking.query.filter(i.id == Booking.flight_id).count()
                             if booked == None:
                                 booked = 0
+
                             dic = {
                                 'empty': num.quantity - booked,
                                 'booked': booked,
@@ -125,7 +126,7 @@ def search(): #search chuyen bay
                 'to': air_to,
                 'date': dte_from,
             }
-            return render_template('search.html', airport=airport, data=data, list_flight=list_flight, len=len(list_flight))
+            return render_template('search.html', airport=airport, data=data, list_flight=list_flight)
 
     return render_template('search.html', airport=airport)
 
@@ -352,7 +353,7 @@ def pay_by_momo():
             amount = 0
             for item in session.get('cart').values():
                 amount += item['quantity'] * item['price']
-            a = dao.payByMomo(str(amount))
+            a = dao.payByMomo(amount)
             return redirect(a)
     except:
         return render_template("payment.html", err_msg=err_msg)
@@ -385,7 +386,11 @@ def pay():
 
     return jsonify({'message': 'Thanh toán thất bại'})
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    return render_template('/profile.html')
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=8888)
+    app.run(debug=True, port=8003)
