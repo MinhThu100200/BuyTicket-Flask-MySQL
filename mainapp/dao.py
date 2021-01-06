@@ -12,18 +12,17 @@ from urllib.request import urlopen, Request
 #region payMomo
 def payByMomo(Amount):
 	endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
-	partnerCode = "MOMOS5MZ20201231"
-	accessKey = "8B7pbIkKMSp9XKB5"
-	serectkey = "AWV3hM9STH982MdyHyQ9OfRodyx9mTH8"
+	partnerCode = "MOMOGQOC20201207"
+	accessKey = "tb0AnQrtECJ3H0Zu"
+	serectkey = "2l9NSfk8rWqc4CpYGZva7dBfCYo9xM25"
 	orderInfo = "Thanh toán vé máy bay "
-	returnUrl = "https://momo.vn/return"
+	returnUrl = "http://127.0.0.1:8989/pay"
 	notifyurl = "https://dummy.url/notify"
 	amount = Amount
 	orderId = str(uuid.uuid4())
 	requestId = str(uuid.uuid4())
 	requestType = "captureMoMoWallet"
 	extraData = "merchantName=;merchantId=" #pass empty value if your merchant does not have stores else merchantName=[storeName]; merchantId=[storeId] to identify a transaction map with a physical store
-
 	#before sign HMAC SHA256 with format
 	#partnerCode=$partnerCode&accessKey=$accessKey&requestId=$requestId&amount=$amount&orderId=$oderId&orderInfo=$orderInfo&returnUrl=$returnUrl&notifyUrl=$notifyUrl&extraData=$extraData
 	rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData

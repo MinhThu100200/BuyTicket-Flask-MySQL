@@ -1,0 +1,71 @@
+{% extends 'base/base.html' %}
+{% block header %}
+
+{% endblock %}
+{% block content %}
+
+<div class="profile-content-right py-5">
+    <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+
+        <li class="nav-item">
+            <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings"
+               role="tab" aria-controls="settings" aria-selected="false">Thông tin cá nhân</a>
+        </li>
+    </ul>
+    <div class="tab-content px-3 px-xl-5" id="myTabContent">
+
+        <div class="tab-pane fade show active" id="settings" role="tabpanel"
+             aria-labelledby="settings-tab">
+            <div class="mt-5">
+                <form>
+
+                    <div class="form-group mb-4">
+                        <label for="fullName">Họ và tên</label>
+                        <input type="text" class="form-control" id="fullName" value="Straub">
+
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="userName">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="userName" value="Straub">
+
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="numberPhone">Số điện thoại</label>
+                        <input type="text" class="form-control" id="numberPhone" value="Straub">
+
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email"
+                               value="albrecht.straub@gmail.com">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="oldPassword">Mật Khẩu Cũ</label>
+                        <input type="password" class="form-control" id="oldPassword">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="newPassword">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="conPassword">Xác nhận mật khẩu</label>
+                        <input type="password" class="form-control" id="conPassword">
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-5">
+                        <button type="submit" class="btn btn-primary mb-2 btn-pill">Cập nhật thông tin
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

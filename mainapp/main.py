@@ -113,12 +113,25 @@ def add_flight():
                     'name': 1
                     })
 
+
+@app.route('/customer',methods=["GET","POST"])
+def customer(): #tat ca chuyen bay ngay hom nay
+    return render_template('employee/customer.html')
+
+@app.route('/profile',methods=["GET","POST"])
+def profile(): #tat ca chuyen bay ngay hom nay
+    return render_template('employee/user-profile.html')
+
+
+
 @app.route('/manage-flight',methods=["GET","POST"])
+@login_required
 def flight(): #tat ca chuyen bay ngay hom nay
     list_flight = dao.all_flight()
     return render_template('manage-flight.html', list_flight=list_flight)
 
 @app.route('/schedule',methods=["GET","POST"])
+@login_required
 def schedule():
     list_detail = []
     f = {}
@@ -134,7 +147,6 @@ def schedule():
             dt = FlightDetail.query.add_columns(FlightDetail.inter_airport, FlightDetail.waiting_time, FlightDetail.note). \
                                     filter(FlightDetail.flights.any(id=i['id'])).all()
             f = i
-  
 
     for d in dt:
         dic = {
@@ -148,6 +160,7 @@ def schedule():
     return render_template('schedule.html', f=f, list_detail=list_detail)
 
 @app.route('/ticket-flight', methods=['GET', 'POST'])
+@login_required
 def ticket_flight():
     clients = Client.query.all()
     price_flight = PriceFlight.query.all()
@@ -226,6 +239,7 @@ def ticket_flight():
     return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
 
 @app.route('/api/cart', methods=['GET', 'POST'])
+@login_required
 def add_to_cart():
     if 'cart' not in session:
        session['cart'] = {}
@@ -257,6 +271,7 @@ def add_to_cart():
 
 
 @app.route('/manage-airport',methods=["GET"])
+@login_required
 def airport():
     query = 'SELECT * FROM airport'
 
@@ -265,6 +280,7 @@ def airport():
     return render_template('manage-airport.html', airport=airport)
 
 @app.route('/manage-flight-route')
+@login_required
 def route():
     fr = FlightRoute.query.all()
     list_route = []
@@ -292,6 +308,7 @@ def ticket():
     return jsonify('sus')
 
 @app.route('/pay')
+@login_required
 def payment():
     total_amount = 0
     total_quantity = 0
@@ -316,6 +333,7 @@ def pay_by_momo():
 
 
 @app.route('/add-airport',methods=['GET','POST'])
+@login_required
 def add_airport():
     err_msg = ""
     if request.method == 'POST':
@@ -344,4 +362,4 @@ def pay():
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=8888)
+    app.run(debug=True, port=8989)

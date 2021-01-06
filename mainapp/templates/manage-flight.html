@@ -28,17 +28,17 @@
                     {% if list_flight %}
                     <tbody>
                     {% for f in list_flight %}
+
                     <tr>
 
-                        <td class="col"><a onclick="addToDetail({{f.id}})" href="{{ url_for('schedule') }}">{{f.name1[1]}}</a>
+                        <td class="col"><a onclick="addToDetail({{f.id}})" href="{{ url_for('schedule') }}">{{f.name1[1]}} </a>
                         </td>
-                        <td class="col">{{f.name2[1]}}</td>
+                        <td class="col"><a onclick="addToDetail({{f.id}})" href="{{ url_for('schedule') }}">{{f.name2[1]}} </a></td>
                         <td class="col">{{f.date_from}}</td>
                         <td class="col">{{f.empty}}</td>
                         <td class="col">{{f.booked}}</td>
-
-
                     </tr>
+
                     {% endfor %}
                     </tbody>
                     {% endif %}
