@@ -12,37 +12,28 @@ import uuid
 import hmac
 from urllib.request import urlopen, Request
 
+domain = "http://127.0.0.1:8003/"
+
 
 # region payMomo
 def payByMomo(Amount):
     endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
-    partnerCode = "MOMOSHFW20201230"
-    accessKey = "ctUbIAI7QbxjF6c6"
-    serectkey = b'P8TTw7iuWQMwXKrvxFm8dco0uZvsJMkc'
+    partnerCode = "MOMOGQOC20201207"
+    accessKey = "tb0AnQrtECJ3H0Zu"
+    serectkey = "2l9NSfk8rWqc4CpYGZva7dBfCYo9xM25"
     orderInfo = "Thanh toán vé máy bay "
-    returnUrl = "https://momo.vn/return"
+    returnUrl = domain + "api/pay"
     notifyurl = "https://dummy.url/notify"
-    amount = str(Amount)
+    amount = Amount
     orderId = str(uuid.uuid4())
     requestId = str(uuid.uuid4())
     requestType = "captureMoMoWallet"
     extraData = "merchantName=;merchantId="  # pass empty value if your merchant does not have stores else merchantName=[storeName]; merchantId=[storeId] to identify a transaction map with a physical store
-
     # before sign HMAC SHA256 with format
     # partnerCode=$partnerCode&accessKey=$accessKey&requestId=$requestId&amount=$amount&orderId=$oderId&orderInfo=$orderInfo&returnUrl=$returnUrl&notifyUrl=$notifyUrl&extraData=$extraData
     rawSignature = "partnerCode=" + partnerCode + "&accessKey=" + accessKey + "&requestId=" + requestId + "&amount=" + amount + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&returnUrl=" + returnUrl + "&notifyUrl=" + notifyurl + "&extraData=" + extraData
-    #
-    # #puts raw signature
-    # print("--------------------RAW SIGNATURE----------------")
-    print(rawSignature)
-    # signature
-    h = hmac.new(serectkey, rawSignature.encode('utf8'), hashlib.sha256)
+    h = hmac.new(bytes(serectkey, 'utf-8'), rawSignature.encode('utf8'), hashlib.sha256)
     signature = h.hexdigest()
-    print("--------------------SIGNATURE----------------")
-    print(signature)
-
-    # json object send to MoMo endpoint
-
     data = {
         'partnerCode': partnerCode,
         'accessKey': accessKey,
@@ -77,10 +68,12 @@ def query(id):
         return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>=4 and month(datetime_bill)<=6 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
     elif (id == "4"):
         return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>= 7 and month(datetime_bill)<=9 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
-    elif (id =="5"):
+    elif (id == "5"):
         return "SELECT DATE_FORMAT(datetime_bill, '%d-%m') , SUM(money) AS DOANHTHU  FROM saledb.bill where month(datetime_bill)>=10 and month(datetime_bill)<=12 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%d-%m') ORDER BY datetime_bill ASC"
     elif (id == "6"):
         return "SELECT DATE_FORMAT(datetime_bill,'%m') as 'Tháng' , SUM(money) AS DOANHTHU FROM saledb.bill where month(datetime_bill)>=1 and month(datetime_bill)<=12 and year(datetime_bill)=year(current_date()) GROUP BY DATE_FORMAT(datetime_bill, '%m') ORDER BY datetime_bill ASC"
+
+
 def get_data_label(query):
     labels = []
     data = []
@@ -112,7 +105,6 @@ class MyBarGraphYears(BaseChart):
         backgroundColor = Color.Transparent
 
     class options:
-
         title = {"text": "DOANH THU QUA CÁC NĂM ", "display": True}
         scales = {
             "yAxes": [
@@ -123,7 +115,6 @@ class MyBarGraphYears(BaseChart):
                 }
             ]
         }
-
 
 
 class MyBarGraphQ1(BaseChart):
@@ -151,6 +142,7 @@ class MyBarGraphQ1(BaseChart):
             ]
         }
 
+
 class MyBarGraphQ2(BaseChart):
     type = ChartType.Line
 
@@ -164,7 +156,6 @@ class MyBarGraphQ2(BaseChart):
         borderColor = Color.Blue
         backgroundColor = Color.Beige
 
-
     class options:
         title = {"text": "DOANH THU THEO QUÝ 2", "display": True}
         scales = {
@@ -176,6 +167,7 @@ class MyBarGraphQ2(BaseChart):
                 }
             ]
         }
+
 
 class MyBarGraphQ3(BaseChart):
     type = ChartType.Line
@@ -201,6 +193,8 @@ class MyBarGraphQ3(BaseChart):
                 }
             ]
         }
+
+
 class MyBarGraphQ4(BaseChart):
     type = ChartType.Line
 
@@ -214,7 +208,6 @@ class MyBarGraphQ4(BaseChart):
         borderColor = Color.Blue
         backgroundColor = Color.Beige
 
-
     class options:
         title = {"text": "DOANH THU THEO QUÝ 4", "display": True}
         scales = {
@@ -226,6 +219,8 @@ class MyBarGraphQ4(BaseChart):
                 }
             ]
         }
+
+
 class MyBarGraphByMonths(BaseChart):
     type = ChartType.Bar
 
@@ -251,6 +246,7 @@ class MyBarGraphByMonths(BaseChart):
             ]
         }
 
+
 def draw_chart(type):
     if (type == "1"):
         NewChart = MyBarGraphYears()
@@ -267,7 +263,7 @@ def draw_chart(type):
     if (type == "5"):
         NewChart = MyBarGraphQ4()
         NewChart.data.label = "Doanh Thu"
-    if(type == "6"):
+    if (type == "6"):
         NewChart = MyBarGraphByMonths()
         NewChart.data.label = "Doanh Thu"
     ChartJSON = NewChart.get()
@@ -613,20 +609,18 @@ def add_bill(money, client_id, user_id):
     return None
 
 
-
 def revenue_month(month, year):
-
     list_flight = []
 
     datefrom = year + '-' + month + '-' + '1'
     dateto = year + '-' + month + '-' + '31'
-    print(datefrom, dateto)
+
     l1 = Flight.query.join(FlightRoute). \
         add_columns(Flight.id, Flight.time_begin, Flight.time_end, Flight.date_flight_from, FlightRoute.name,
                     Flight.date_flight_to, FlightRoute.id_airport1,
                     FlightRoute.id_airport2, Flight.plane_id). \
         filter(Flight.flight_route_id == FlightRoute.id).filter(Flight.date_flight_from.between(datefrom, dateto)).all()
-    print(l1)
+
     l2 = Flight.query.join(Plane). \
         add_columns(Flight.id, Plane.quantity, Plane.amount_of_seat1, Plane.amount_of_seat2). \
         filter(Flight.plane_id == Plane.id).all()
@@ -636,25 +630,27 @@ def revenue_month(month, year):
             if num.id == i.id:
                 booked = db.session.query(func.sum(Booking.amount_seat)).filter(
                     i.id == Booking.flight_id).scalar()
+
                 if booked == None:
                     booked = 0
-        dic = {
-            'id': i.id,
-            'name': i.name,
-            'date_from': i.date_flight_from,
-            'time_begin': i.time_begin,
-            'date_end': i.date_flight_to,
-            'time_end': i.time_end,
-            'seat1': num.amount_of_seat1,
-            'seat2': num.amount_of_seat2,
-            'quantity': num.quantity,
-            'empty': num.quantity - booked,
-            'rate': round(booked*100/num.quantity, 2),
-            'booked': booked,
-        }
+
+                dic = {
+                    'id': i.id,
+                    'name': i.name,
+                    'date_from': i.date_flight_from,
+                    'time_begin': i.time_begin,
+                    'date_end': i.date_flight_to,
+                    'time_end': i.time_end,
+                    'seat1': num.amount_of_seat1,
+                    'seat2': num.amount_of_seat2,
+                    'quantity': num.quantity,
+                    'empty': num.quantity - booked,
+                    'rate': round(booked * 100 / num.quantity, 2),
+                    'booked': booked,
+                }
 
         list_flight.append(dic)
-    #print(list_flight)
+
     return list_flight
 
 
@@ -669,7 +665,7 @@ def revenue_year(year):
         booked = 0
         for p in list_flight:
             amount_flight = amount_flight + 1
-            revenue = revenue + p['booked']*50000
+            revenue = revenue + p['booked'] * 50000
             quantity = quantity + p['quantity']
             booked = booked + p['booked']
         if quantity == 0:
@@ -684,14 +680,14 @@ def revenue_year(year):
                 'id': i,
                 'amount_flight': amount_flight,
                 'revenue': revenue,
-                'rate': round(booked*100/quantity, 2)
+                'rate': round(booked * 100 / quantity, 2)
             }
         list_month.append(dic)
     print(list_month)
     return list_month
 
-def update_rule3(amount):
 
+def update_rule3(amount):
     query = 'update rule3 set amount = %s where id = 1'
     val = (amount)
     sign = add_data(query, val)
@@ -700,6 +696,3 @@ def update_rule3(amount):
         return val
 
     return None
-
-
-

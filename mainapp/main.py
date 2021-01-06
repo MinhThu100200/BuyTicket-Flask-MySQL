@@ -35,6 +35,8 @@ def login_admin():
         if user:
             login_user(user=user)
         return redirect("/admin")
+    else:
+        return redirect("/admin")
 
 @login.user_loader
 def user_load(user_id):
@@ -109,7 +111,7 @@ def search(): #search chuyen bay
                     list_flight.append(dic)
             return render_template('search.html', airport=airport, list_flight=list_flight)
         else:
-            err_msg="Không tìm thấy"
+            err_msg = "Không tìm thấy"
 
             return render_template('search.html', airport=airport, err_msg=err_msg)
 
@@ -215,12 +217,14 @@ def ticket_flight():
         id_flight_now = request.form.get('ID')
         price = request.form.get('nameprice')
         print(price)
+        if id_card == "" or name == "" or phone == "":
+            err_msg = "Thông tin khách hàng chưa đầy đủ"
+            return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list, err_msg=err_msg)
         if 'client' not in session:
             session['client'] = {}
         client = session['client']
         for c in clients:
             if id_card == c.idcard:
-                id = c.id
                 client[str(id)] = {
                     'id': c.id,
                     'name': c.name,
@@ -232,7 +236,7 @@ def ticket_flight():
                 print(client)
                 session['client'] = client
                 return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
-        if id == 0 and id_card != "" and name != "" and phone != "":
+        if id_card != "" and name != "" and phone != "":
             client_new = dao.add_client(name=name, phone=phone, idcard=id_card)
             client[str(client_new[0])] = {
                 'id': client_new[0],
@@ -243,11 +247,8 @@ def ticket_flight():
                 'price': price
             }
             session['client'] = client
-        else:
-            err_msg = "Chưa nhập thông tin khách hàng"
-        #session['client'] = client
-        print(client)
-        return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
+
+            return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
 
     return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
 
@@ -338,7 +339,7 @@ def pay_by_momo():
             amount = 0
             for item in session.get('cart').values():
                 amount += item['quantity'] * item['price']
-            a = dao.payByMomo(amount)
+            a = dao.payByMomo(str(amount))
             return redirect(a)
     except:
         return render_template("payment.html", err_msg=err_msg)
@@ -358,6 +359,15 @@ def add_airport():
         else:
             err_msg = "Đã có sân bay này"
     return render_template('add-airport.html', err_msg=err_msg)
+''''@app.route('/pay-by-momo')
+def pay_momo():
+    if 'cart' in session and session['cart']:
+        cart = session['cart']
+        client = session['client']
+        dao.add_total(cart, client)
+        del session['cart']
+        del session['client']'''
+
 
 @app.route('/api/pay', methods=['GET', 'POST'])
 def pay():
