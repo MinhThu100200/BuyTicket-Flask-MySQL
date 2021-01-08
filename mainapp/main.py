@@ -251,7 +251,7 @@ def ticket_flight():
                 'price': price
             }
             session['client'] = client
-
+            print(client)
             return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
 
     return render_template('ticket.html', f=f, list_detail=list_detail, price_list=price_list)
@@ -324,7 +324,7 @@ def ticket():
     print(data)
     return jsonify('sus')
 
-@app.route('/api/paymomo', methods=['POST'])
+@app.route('/api/paymomo', methods=['POST','GET'])
 def pay_momo():
     err_msg = 'Thanh toán thất bại'
     if 'cart' in session and session['cart']:
@@ -342,9 +342,8 @@ def pay_momo():
 def payment():
     total_amount = 0
     total_quantity = 0
-    if 'cart' in session and session['cart']:
+    if 'cart' in session and session['cart'] and 'client' in session and session['client']:
         total_quantity, total_amount = dao.cart_stats(session.get('cart'))
-
     return render_template('payment.html', total_quantity=total_quantity, total_amount=total_amount)
 
 @app.route("/payMoMo", methods=['post'])
@@ -409,4 +408,4 @@ def not_found(e):
 
 if __name__ == "__main__":
     from mainapp.admin_module import *
-    app.run(debug=True, port=8003)
+    app.run(debug=True, port=8004)

@@ -12,7 +12,7 @@ import uuid
 import hmac
 from urllib.request import urlopen, Request
 
-domain = "http://127.0.0.1:8003/"
+domain = "http://127.0.0.1:8004/"
 
 
 # region payMomo

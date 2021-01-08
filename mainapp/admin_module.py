@@ -5,8 +5,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_login import current_user, logout_user
 from flask import redirect, url_for
-import pymysql
-from pychartjs import BaseChart, ChartType, Color
+
 
 class UpdateRule(BaseView):
     @expose('/', methods=['get', 'post'])
@@ -21,6 +20,12 @@ class UpdateRule(BaseView):
         err_msg = "Điều chỉnh thành công"
         return self.render('/admin/rule3.html', err_msg=err_msg)
 
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect('/admin')
 
 class RevenueMonth(BaseView):
     @expose('/', methods=['get', 'post'])
@@ -206,13 +211,24 @@ class BookingViewModel(ModelView):
         # redirect to login page if user doesn't have access
         return redirect('/admin')
 
+class PriceFlightModelView(ModelView):
+
+    column_display_pk = True
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect('/admin')
+
+
 admin.add_view(FlightModelView(Flight, db.session))
 admin.add_view(UserModelView(User, db.session))
 admin.add_view(FlightDetailModelView(FlightDetail, db.session))
 admin.add_view(BookingViewModel(Booking, db.session))
 admin.add_view(FlightRouteModelView(FlightRoute, db.session))
 #admin.add_view(ModelView(Plane, db.session))
-admin.add_view(ModelView(PriceFlight, db.session))
+admin.add_view(PriceFlightModelView(PriceFlight, db.session))
 #admin.add_view(ModelView(Bill, db.session))
 #admin.add_view(ModelView(Ticket, db.session))
 #admin.add_view(ModelView(TypeTicket, db.session))

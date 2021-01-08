@@ -21,7 +21,7 @@
             <th>Giá</th>
             <th>Số lượng</th>
         </tr>
-        {% if 'cart' in session and session['cart'] %}
+        {% if 'cart' in session and session['cart'] and 'client' in session and session['client'] %}
         {% for p in session['cart'].values() %}
         <tr>
 
